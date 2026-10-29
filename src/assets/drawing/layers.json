@@ -1,0 +1,25 @@
+{
+  "width": 1100,
+  "height": 1700,
+  "source": "Dibujo Herme_1504.psd",
+  "layers": [
+    {
+      "file": "layer-00.webp",
+      "name": "Layer 0",
+      "hidden": false,
+      "opacity": 1
+    },
+    {
+      "file": "layer-01.webp",
+      "name": "Layer 1",
+      "hidden": false,
+      "opacity": 1
+    },
+    {
+      "file": "layer-02.webp",
+      "name": "Layer 2",
+      "hidden": false,
+      "opacity": 1
+    }
+  ]
+}

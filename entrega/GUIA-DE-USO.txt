@@ -1,0 +1,151 @@
+﻿VERSIÓN PÚBLICA (GitHub)
+- Las notas privadas del presentador en español no se incluyen: la ventana de notas (tecla N) abre vacía.
+- No se incluyen el cuestionario, los informes internos ni las capturas.
+- Los sprites, la música y los sonidos de StarFall (paquete de assets del taller) y el diagrama de flujo de Northstar se reemplazaron por marcadores originales, porque no está confirmado que puedan redistribuirse.
+
+GUÍA DE USO — Portafolio "Beyond the Classroom"
+=================================================
+
+Todo funciona sin internet y sin instalar nada. Usa Microsoft Edge.
+
+
+1. ABRIR EL PORTAFOLIO
+----------------------
+Doble clic en  ABRIR-PORTAFOLIO.html
+(o en  portafolio\index.html, es lo mismo).
+
+Si Windows lo abre con otro programa: clic derecho > Abrir con > Microsoft Edge.
+
+La primera vez aparece la animación del cuaderno. Para saltarla: tecla Esc
+o el botón "Skip intro". Después ya no se repite.
+
+IMPORTANTE: no separes los archivos de la carpeta "portafolio". Si la copias a
+una USB, copia la carpeta completa.
+
+
+2. PRESENTAR (paso a paso)
+--------------------------
+Antes de empezar:
+  0) Conecta el cargador de la laptop. Con batería, Windows baja el rendimiento
+     y StarFall y las animaciones pueden ir más lentos.
+  a) Conecta el proyector. Presiona  Windows + P  y elige  "Extender".
+  b) Abre el portafolio y arrastra la ventana de Edge a la pantalla del proyector.
+
+Empezar:
+  1. Presiona  P  (o el botón "Present" arriba a la derecha).
+  2. Elige la ruta:
+       - "Guided route": 15 paradas, 7 minutos 20 segundos. (Recomendada)
+         Las paradas 3 y 4 son tus reflexiones de la Semana 1 y la Semana 2.
+       - "Extended exploration": todas las secciones, unos 27 minutos.
+     Presiona Enter para la ruta guiada.
+  3. Presiona  N  para abrir tus notas en español en una ventana aparte.
+     Deja esa ventana en TU pantalla (la laptop), no en el proyector.
+     Las notas nunca aparecen en la ventana del proyector.
+
+Teclas durante la presentación:
+  →  ↓  Espacio  Av Pág ....... siguiente parada
+  ←  ↑  Re Pág ................ parada anterior
+  S ........................... saltar el resto de los demos de ese taller
+  R ........................... regresar a la parada actual (si te fuiste a explorar)
+  C ........................... ocultar o mostrar el texto en inglés de abajo
+  N ........................... abrir otra vez la ventana de notas
+  Esc o P ..................... terminar la presentación
+
+Control remoto (clicker): funciona solo, porque manda Av Pág / Re Pág.
+
+Si cierras Edge sin querer: vuelve a abrir, presiona P y elige "Resume".
+Continúa en la misma parada.
+
+El texto en inglés de abajo es lo que puedes leer en voz alta.
+La ventana de notas te muestra el tiempo y si vas atrasada.
+
+
+3. SONIDO Y STARFALL
+--------------------
+El navegador no deja sonar nada hasta que haces clic. Haz clic en
+"Start StarFall" y ya suenan la música y los efectos.
+Revisa el volumen de la laptop antes de presentar.
+
+Botones del juego: Music, Sound effects, Volume, Collision boxes, Full screen.
+Después de hacer clic dentro del juego o de un demo, las flechas se quedan en ese
+demo y ya no avanzan la presentación. Usa Av Pág o el clicker, que siempre avanzan.
+
+
+4. SI ALGO FALLA
+----------------
+- La ventana de notas no abre: Edge bloqueó la ventana emergente. Haz clic en el
+  aviso de la barra de direcciones > "Permitir siempre". Si no, usa la copia
+  impresa: notas-del-presentador\NOTAS-PRESENTADOR.txt
+- El portafolio no responde o la computadora es muy lenta: abre
+  presentacion-respaldo\Presentacion-respaldo.pdf
+  Tiene las 15 paradas de la ruta guiada, una por página, en el mismo orden.
+  Avanza con el clicker o con las flechas (en Edge, vista de pantalla completa: F11).
+- Va lento: cierra otras pestañas y programas. El juego baja su calidad solo
+  si la computadora no alcanza.
+
+
+5. AGREGAR VIDEOS (cuando los tengas)
+-------------------------------------
+1. Copia el video .mp4 en  portafolio\media\
+2. Abre  portafolio\media.js  con el Bloc de notas.
+3. Copia el ejemplo que está ahí, quítale las dos barras "//" y cambia los datos:
+   nombre del archivo, título en inglés, fecha (AAAA-MM-DD) y si es tuyo
+   ("student") o de la clase ("class").
+4. Guarda y recarga el portafolio (F5). No hay que compilar nada.
+Solo agrega videos reales.
+
+
+6. TUS REFLEXIONES POR SEMANA
+-----------------------------
+Ya están las reflexiones de la Semana 1 y la Semana 2. Están en la página de
+inicio, en la sección "In my own words, week by week" (menú "In my words"),
+justo después de la línea de tiempo. Cada semana muestra un resumen y una frase
+grande; el botón "Read the full reflection" abre el texto completo.
+Cada taller muestra una frase de la semana que le corresponde, con el enlace
+"Read the whole week".
+Las semanas 3 y 4 dicen "Reflection coming soon" hasta que las escribas.
+
+Para corregir un texto o agregar la Semana 3 cuando termine:
+1. Abre  portafolio\reflections.js  con el Bloc de notas.
+2. Cada semana es un bloque { week: 1, title: ..., summary: ..., quote: ... }.
+   Corrige el texto entre comillas. Para la Semana 3, copia el bloque de la
+   Semana 2, cambia week: 2 por week: 3 y escribe tus textos.
+   Respeta las comillas, las comas y los corchetes.
+3. Guarda y recarga (F5). No hay que compilar nada.
+Si falta una comilla o una coma, las reflexiones dejan de aparecer (el resto
+del portafolio sigue funcionando): revisa las comillas y las comas, o vuelve a
+copiar reflections.js desde el ZIP.
+Si cambias las frases, revisa también tus notas en  portafolio\notes.es.js
+(paradas "week-1" y "week-2").
+
+
+7. EDITAR TUS NOTAS DEL PRESENTADOR
+-----------------------------------
+Abre  portafolio\notes.es.js  con el Bloc de notas. Cada parada tiene su lista
+de frases entre comillas. Respeta las comillas y las comas. Guarda y recarga.
+
+
+8. VER LO QUE FALTA CONFIRMAR (solo para ti)
+--------------------------------------------
+Abre el portafolio y agrega  ?review  al final de la dirección, por ejemplo:
+  ...\portafolio\index.html?review
+Aparecen recuadros color ámbar con lo pendiente. En la versión normal y al
+presentar, esos recuadros no se ven.
+
+
+9. PUBLICAR EN INTERNET
+-----------------------
+El portafolio NO está publicado. Decide tú si quieres publicarlo y cuándo.
+Antes de hacerlo, confirma los permisos de fotos donde aparecen otras personas.
+
+
+Contenido de esta carpeta
+-------------------------
+ABRIR-PORTAFOLIO.html ............ abre el portafolio
+portafolio\ ...................... el portafolio completo (no separar)
+portafolio\media\ ................ aquí van tus videos
+notas-del-presentador\ ........... copia de tus notas para imprimir
+presentacion-respaldo\ ........... PDF e imágenes por si falla lo interactivo
+documentos\ ...................... informe de evidencias, informe de pruebas,
+                                   cuestionario de reflexiones
+capturas\ ........................ capturas de computadora y celular

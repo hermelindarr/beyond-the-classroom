@@ -1,0 +1,11 @@
+CARPETA DE VIDEOS
+=================
+
+Aquí van tus videos reales (.mp4). Está vacía a propósito: no hay videos falsos.
+
+1. Copia aquí el archivo .mp4 (de preferencia H.264, el formato normal de un celular).
+   Usa un nombre sin espacios ni acentos, por ejemplo: harmony-walk.mp4
+2. Abre ..\media.js con el Bloc de notas y agrega una línea como el ejemplo de ese archivo.
+3. Guarda y recarga el portafolio (F5).
+
+Opcional: una imagen de portada (.jpg) y subtítulos (.vtt) en esta misma carpeta.

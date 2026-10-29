@@ -1,0 +1,97 @@
+@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource/atkinson-hyperlegible/400.css";
+@import "@fontsource/atkinson-hyperlegible/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "lenis/dist/lenis.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    background: theme("colors.navy");
+    color: theme("colors.ivory");
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply font-body text-base;
+    font-feature-settings: "kern", "liga";
+  }
+  ::selection {
+    background: theme("colors.teal.DEFAULT");
+    color: theme("colors.navy");
+  }
+  :focus-visible {
+    outline: 2px solid theme("colors.teal.soft");
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  img {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-shell px-5 md:px-10;
+  }
+  /* The notebook's ruling, carried over from the intro as the site's grid. */
+  .ruling {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      repeating-linear-gradient(to bottom, rgba(241, 238, 232, 0.035) 0 1px, transparent 1px 32px);
+    mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.35) 70%, rgba(0, 0, 0, 0.15) 100%);
+  }
+  .display {
+    @apply font-display font-extrabold;
+    letter-spacing: -0.045em;
+    line-height: 0.86;
+    font-variation-settings: "opsz" 96;
+  }
+  .heading {
+    @apply font-display font-bold;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+  }
+  .chip {
+    @apply inline-flex items-center gap-2 whitespace-nowrap rounded-full px-3 py-[3px] text-sm;
+  }
+  .chip-student { @apply bg-teal/15 text-teal-soft; }
+  .chip-class { @apply bg-violet/20 text-violet-soft; }
+  .chip-upcoming { @apply border border-dashed border-mist/60 text-mist; }
+  .btn {
+    @apply inline-flex items-center gap-2 rounded-full border border-ivory/25 px-4 py-2 text-sm text-ivory transition-colors duration-300;
+  }
+  .btn:hover { @apply border-teal bg-teal/10; }
+  .btn:disabled { @apply cursor-not-allowed opacity-50; }
+}
+
+/* Presentation mode: the audience window shows only the current stop. */
+html[data-presenting] .site-header nav,
+html[data-presenting] .ruling,
+html[data-presenting] .site-footer,
+html[data-presenting] [data-internal],
+/* The audience sees each week's summary and quote, never the long reading. */
+html[data-presenting] [data-reflection-full] { display: none; }
+/* Room for the narration and progress bar at the bottom. */
+html[data-presenting] main { padding-bottom: 220px; }
+/* Tighter sections, and stages sized to the screen height, so a whole demo
+   (with its controls) fits above the narration and progress bar. */
+html[data-presenting] main section { padding-top: 2.5rem; }
+html[data-presenting] main section > .shell > .mt-12 { margin-top: 2rem; }
+html[data-presenting] #gd-play .max-w-\[1180px\] { max-width: min(1180px, calc((100vh - 440px) * 1366 / 768)); }
+html[data-presenting] #an-keys .max-w-\[1000px\] { max-width: min(1000px, calc((100vh - 520px) * 16 / 9)); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

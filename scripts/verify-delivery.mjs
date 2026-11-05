@@ -24,7 +24,7 @@ const browser = await puppeteer.launch({
 });
 try {
   for (const f of ["ABRIR-PORTAFOLIO.html", "GUIA-DE-USO.txt", "portafolio/index.html", "portafolio/media.js", "portafolio/notes.es.js", "portafolio/reflections.js",
-    "portafolio/media/LEEME.txt", "portafolio/starfall/snd_wizardSong.mp3", "portafolio/starfall/snd_popSound.wav", "portafolio/starfall/snd_sadWhistleSound.wav",
+    "portafolio/media/LEEME.txt", "portafolio/starfall/snd_wizardSong.mp3", "portafolio/starfall/snd_popSound.wav", "portafolio/starfall/snd_sadWhistleSound.wav", "portafolio/starfall/snd_gameOverSound.wav",
     "presentacion-respaldo/Presentacion-respaldo.pdf", "notas-del-presentador/NOTAS-PRESENTADOR.txt"]) {
     const s = await stat(path.join(ROOT, f)).catch(() => null);
     check(s && s.size > 0, `File present: ${f}`, s ? `${Math.round(s.size / 1024)} KB` : "missing");
@@ -57,18 +57,18 @@ try {
     reflections: typeof window.BTC_REFLECTIONS === "object",
     notes: "BTC_NOTES" in window,
   }));
-  check(state.weeks?.join() === "1,2", "reflections.js is read: weeks 1 and 2", String(state.weeks));
+  check(state.weeks?.join() === "1,2,3,4", "reflections.js is read: weeks 1 to 4", String(state.weeks));
   check(state.media, "media.js is read");
   check(state.reflections, "Workshop lines from reflections.js are read");
   check(!state.notes, "Spanish notes are not loaded in the projected window");
-  check(await p.$("#week-1") && await p.$("#week-2") && !(await p.$("#week-3")) && !(await p.$("#week-4")), "Home shows weeks 1 and 2; weeks 3 and 4 have no reflection");
+  check(await p.$("#week-1") && await p.$("#week-2") && await p.$("#week-3") && await p.$("#week-4"), "Home shows the reflections of weeks 1 to 4");
 
   // StarFall sounds: decode each file, then play the game as a visitor would.
   await p.evaluate(() => (location.hash = "#/game-design"));
   await sleep(2500);
   const sounds = await p.evaluate(async () => {
     const out = {};
-    for (const f of ["snd_wizardSong.mp3", "snd_popSound.wav", "snd_sadWhistleSound.wav"]) {
+    for (const f of ["snd_wizardSong.mp3", "snd_popSound.wav", "snd_sadWhistleSound.wav", "snd_gameOverSound.wav"]) {
       out[f] = await new Promise((res) => {
         const a = new Audio(`starfall/${f}`);
         a.oncanplaythrough = () => res(Math.round(a.duration * 100) / 100);
@@ -82,13 +82,13 @@ try {
   await p.$eval("#gd-play", (el) => el.scrollIntoView({ block: "center" }));
   await sleep(600);
   await p.$$eval("#gd-play button", (bs) => bs.find((b) => /Start StarFall/.test(b.textContent)).click());
-  await sleep(2500);
+  await sleep(700); // version 2.0 stops the music at Game Over (possible after ~3 s): listen early
   const music = await p.evaluate(() => new Promise((res) => {
     // Every Audio the game played (captured by the spy installed before load).
     const song = (window.__played ?? []).find((a) => a.src.endsWith("snd_wizardSong.mp3"));
     if (!song) return res({ found: false });
     const t0 = song.currentTime;
-    setTimeout(() => res({ found: true, paused: song.paused, advanced: song.currentTime > t0, error: song.error?.code ?? null }), 1200);
+    setTimeout(() => res({ found: true, paused: song.paused, advanced: song.currentTime > t0, error: song.error?.code ?? null }), 500);
   }));
   check(music.found && !music.paused && music.advanced && !music.error, "Start StarFall: the music really plays (time advances)", JSON.stringify(music));
 

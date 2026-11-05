@@ -41,13 +41,20 @@ try {
   /* ---------- Content: complete, in order, nothing invented ---------- */
   const p = await open();
   const data = await p.evaluate(() => window.BTC_WEEKS);
-  check(Array.isArray(data) && data.map((w) => w.week).join() === "1,2", "reflections.js holds exactly weeks 1 and 2", data?.map((w) => w.week).join());
+  check(Array.isArray(data) && data.map((w) => w.week).join() === "1,2,3,4", "reflections.js holds weeks 1 to 4", data?.map((w) => w.week).join());
   check(await p.$("#week-1") && await p.$("#week-2"), "Home shows a reflection for week 1 and week 2");
-  check(!(await p.$("#week-3")) && !(await p.$("#week-4")), "No reflection exists for weeks 3 and 4");
+  // Weeks 3 and 4 hold only what Hermelinda told me on Nov 4 (the business idea, the database
+  // bootcamp) and StarFall 2.0 from her files. Week 4 says it is not over.
+  check(/business idea/.test(await text(p, "#week-3")) && /won/.test(await text(p, "#week-3")), "Week 3: the business idea that won");
+  check(/not over yet/.test(await text(p, "#week-4")), "Week 4 says the week is not over yet");
+  check(/LED lights/.test(JSON.stringify(data.find((w) => w.week === 3))) && /sensor/.test(JSON.stringify(data.find((w) => w.week === 3))), "Week 3: the pumpkin with LED lights and a sensor");
+  check(/teacher gave us the Game Over image/.test(JSON.stringify(data.find((w) => w.week === 4))), "Week 4: the Game Over image came from the teacher");
+  const all = await p.evaluate(() => document.documentElement.outerHTML);
+  check(!/guns\.xstage|\bAlex\b/.test(all), "Nothing from someone else's “Alex” folder");
   const titles = await p.$$eval("#reflections article h3", (h) => h.map((x) => x.textContent));
   check(titles[0] === "A New Beginning: Everything Felt Like a Movie" && titles[1] === "Creativity, Technology and New Experiences", "Week titles are exact", titles.join(" | "));
   const soon = await p.$$eval("#reflections .border-t", (rows) => rows.filter((r) => r.textContent.includes("Reflection coming soon")).map((r) => r.textContent.match(/Week \d/)?.[0]));
-  check(soon.join() === "Week 3,Week 4", "Weeks 3 and 4 say only “Reflection coming soon”", soon.join());
+  check(soon.length === 0, "No week still says “Reflection coming soon”", soon.join());
 
   check(await p.$eval("#week-1-full", (el) => el.hidden) && await p.$eval("#week-2-full", (el) => el.hidden), "Full reflections start closed (summary first)");
   const summary1 = await text(p, "#week-1");
@@ -72,7 +79,7 @@ try {
   check(w2.includes("Halloween Social") && !w1.includes("Halloween"), "Halloween Social appears in week 2 only");
   // Editorial integrity: full length, no repeated sentences, quote not repeated in the body,
   // and each workshop line is taken word for word from its week.
-  for (const w of data) {
+  for (const w of data.filter((x) => x.week <= 2)) { // the full reflections; weeks 3–4 are short until she adds more
     const body = [...w.opening, ...w.parts.flatMap((x) => x.text), ...w.closing];
     const words = body.join(" ").split(/\s+/).filter(Boolean).length;
     check(words >= 550 && words <= 900, `Week ${w.week}: full reflection length`, `${words} words`);
@@ -89,7 +96,8 @@ try {
   const gdRow = await p.$$eval("#workshops li", (lis) => lis.find((li) => li.querySelector("h3")?.textContent.startsWith("Game Design"))?.innerText ?? "");
   check(/theory in week 1/.test(gdRow) && /started in week 2/.test(gdRow), "Workshops list: Game Design says theory in week 1, StarFall started in week 2", gdRow.split("\n").slice(0, 2).join(" / "));
   const panel = await p.$eval("#starfall", (el) => el.innerText);
-  check(/When\s*Week 2/.test(panel), "Home StarFall panel says Week 2");
+  // StarFall started in week 2 and version 2.0 came in week 4; never week 1.
+  check(/When\s*Weeks 2 and 4/.test(panel) && !/Week 1/.test(panel), "Home StarFall panel says weeks 2 and 4 (never week 1)");
   const notesW1 = (await readFile(path.join(DIST, "notes.es.js"), "utf8")).match(/"week-1": \[[\s\S]*?\]/)?.[0] ?? "";
   check(!/StarFall|GameMaker/i.test(notesW1), "Week 1 Spanish notes don't mention StarFall");
   const pageText = await p.evaluate(() => document.body.innerText);

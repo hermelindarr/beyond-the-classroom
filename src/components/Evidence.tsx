@@ -3,8 +3,15 @@ import thumbnails from "../assets/evidence/thumbnails.webp";
 import walkRig from "../assets/evidence/harmony-walk-rig.webp";
 import arduino from "../assets/evidence/arduino-desk.webp";
 import cipherNotes from "../assets/notebook/cipher.webp";
+import database from "../assets/evidence/database-sqlite.webp";
+import basket from "../assets/evidence/business-prize-basket.webp";
+import lifeDrawing1 from "../assets/evidence/life-drawing-1.webp";
+import lifeDrawing2 from "../assets/evidence/life-drawing-2.webp";
+import blender from "../assets/evidence/blender-model.webp";
+import hockey from "../assets/evidence/hockey-game.webp";
+import pumpkin from "../assets/evidence/pumpkin-workshop.webp";
 
-type Piece = { src: string; alt: string; caption: string; subject: string; area: string; fit?: "contain" };
+type Piece = { src: string; alt: string; caption: string; subject: string; area: string; fit?: "contain"; mine?: boolean };
 
 // Every piece here is the student's own drawing or photo. Layout areas vary by piece so the
 // strip reads like a contact sheet, not a grid of identical cards.
@@ -13,6 +20,17 @@ const pieces: Piece[] = [
   { src: walkRig, alt: "Harmony on a drawing tablet, showing a green rigged character mid-step on a 60-frame timeline.", caption: "Walk cycle practice on a rigged character", subject: "Animation in Harmony", area: "md:col-span-5" },
   { src: thumbnails, alt: "Five small thumbnail sketches on sticky notes, each divided by composition lines.", caption: "Thumbnail sketches on sticky notes", subject: "Drawing", area: "md:col-span-3 md:row-span-2" },
   { src: arduino, alt: "An Arduino UNO with a red LED lit, a breadboard, an ultrasonic sensor and jumper wires on a white table.", caption: "An Arduino UNO, LED and ultrasonic sensor, in my photo from the workshop", subject: "Arduino and Micro:bits", area: "md:col-span-5" },
+];
+
+// Weeks 3 and 4. The photos carry no date, so the week comes from the program schedule.
+const later: Piece[] = [
+  { src: database, alt: "My laptop screen in DB Browser for SQLite: SELECT queries on Movie and Category tables, with a JOIN, and three results: Ice Age, Toy Story and Spirit.", caption: "My database, Categoria.db: tables, SQL and a JOIN query", subject: "Database Bootcamp", area: "md:col-span-7", mine: true },
+  { src: basket, alt: "A wrapped gift basket on a table.", caption: "The basket our team won with our business idea", subject: "Entrepreneurship workshop", area: "md:col-span-5" },
+  { src: lifeDrawing1, alt: "Quick pencil gesture sketches of a seated figure on paper clipped to a board.", caption: "Gesture sketches from life drawing", subject: "Drawing", area: "md:col-span-4", mine: true },
+  { src: lifeDrawing2, alt: "Several quick pencil gesture sketches of standing and bending figures on paper.", caption: "More gesture sketches from the same session", subject: "Drawing", area: "md:col-span-4", mine: true },
+  { src: pumpkin, alt: "A carved pumpkin with a glowing face on a table.", caption: "“Build a pumpkin that bites back”: we programmed LED lights, and a sensor that made a sound when someone came close", subject: "Program event", area: "md:col-span-4" },
+  { src: blender, alt: "Blender on a tablet screen: a 3D model of a four-legged object next to a wood texture.", caption: "A 3D model in Blender, Nov 3", subject: "3D Animation in Blender", area: "md:col-span-6" },
+  { src: hockey, alt: "An ice hockey game seen from the stands of an indoor arena.", caption: "Sudbury Wolves hockey game", subject: "Program event", area: "md:col-span-6" },
 ];
 
 export function Evidence() {
@@ -36,7 +54,26 @@ export function Evidence() {
                 {p.caption}
                 <span className="mt-1 flex items-center gap-2 text-sm text-mist">
                   <span className="h-2 w-2 rounded-full bg-teal" aria-hidden="true" />
-                  {p.subject === "Drawing" ? "My work" : "My photo"} · {p.subject}
+                  {p.subject === "Drawing" || p.mine ? "My work" : "My photo"} · {p.subject}
+                </span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <h3 className="heading mt-20 border-t border-rule pt-10 text-2xl">Weeks 3 and 4</h3>
+        <p className="mt-2 text-sm text-mist">These photos have no date stamp; the week comes from the program schedule.</p>
+        <div className="mt-8 grid gap-x-6 gap-y-10 md:grid-cols-12">
+          {later.map((p) => (
+            <figure key={p.src} className={p.area}>
+              <div className="overflow-hidden rounded-evidence bg-graphite">
+                <img src={p.src} alt={p.alt} loading="lazy" className="aspect-[16/10] w-full object-cover" />
+              </div>
+              <figcaption className="mt-3 text-[15px]">
+                {p.caption}
+                <span className="mt-1 flex items-center gap-2 text-sm text-mist">
+                  <span className="h-2 w-2 rounded-full bg-teal" aria-hidden="true" />
+                  {p.mine ? "My work" : "My photo"} · {p.subject}
                 </span>
               </figcaption>
             </figure>

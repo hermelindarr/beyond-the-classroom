@@ -1,10 +1,13 @@
 import { useRef, useState, type ReactNode } from "react";
 import { gmlEvents, type GmlEvent } from "../../starfall/gml";
-import { AnimationEndDemo, ClickDemo, CollisionDemo, CreateDemo, GuiDemo, SpawnDemo, StepDemo } from "./demos";
+import { AnimationEndDemo, ClickDemo, CollisionDemo, CreateDemo, GuiDemo, SpawnDemo, StepDemo, WavesDemo } from "./demos";
 
 const demos: Record<string, () => ReactNode> = {
-  "manager-create": () => <SpawnDemo />,
+  "manager-create": () => <WavesDemo />,
+  "manager-step": () => <WavesDemo />,
   "manager-alarm": () => <SpawnDemo />,
+  "manager-key-r": () => <WavesDemo />,
+  "gameover-click": () => <WavesDemo />,
   "star-create": () => <CreateDemo />,
   "star-step": () => <StepDemo />,
   "star-click": () => <ClickDemo />,
@@ -13,7 +16,8 @@ const demos: Record<string, () => ReactNode> = {
   "manager-gui": () => <GuiDemo />,
 };
 
-const objects = ["obj_gameManager", "obj_star", "obj_explosion"] as const;
+const objects = ["obj_gameManager", "obj_star", "obj_explosion", "obj_gameOver"] as const;
+const v2Label = { new: "New in 2.0", changed: "Changed in 2.0", off: "Off in 2.0" } as const;
 
 /** Pick a GML event: see the real code, what it does, and try it. */
 export function MechanicsLab() {
@@ -56,7 +60,7 @@ export function MechanicsLab() {
                       className={`-ml-px flex w-full items-baseline justify-between gap-4 border-l-2 py-2 pl-4 pr-2 text-left transition-colors ${active.id === ev.id ? "border-teal text-ivory" : "border-transparent text-ivory/60 hover:text-ivory"}`}
                     >
                       <span className="font-display text-lg font-medium tracking-tight">{ev.event}</span>
-                      <span className="text-xs text-mist">{ev.concept}</span>
+                      <span className="text-right text-xs text-mist">{ev.v2 ? <span className="text-amber">{v2Label[ev.v2]}</span> : ev.concept}</span>
                     </button>
                   ),
                 )}
@@ -67,7 +71,7 @@ export function MechanicsLab() {
       </div>
 
       <div id="gml-panel" role="tabpanel" aria-labelledby={`tab-${active.id}`} className="min-w-0 md:col-span-8">
-        <p className="text-sm text-teal-soft">{active.concept}</p>
+        <p className="text-sm text-teal-soft">{active.concept}{active.v2 && <span className="text-amber"> · {v2Label[active.v2]}</span>}</p>
         <h3 className="heading mt-2 text-2xl md:text-3xl">{active.object} · {active.event}</h3>
         <p className="mt-4 max-w-measure text-lg text-ivory/85">{active.explain}</p>
         <div className="mt-8" key={active.id}>{demos[active.id]()}</div>

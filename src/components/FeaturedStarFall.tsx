@@ -61,12 +61,12 @@ export function FeaturedStarFall() {
           <p className="text-sm text-mist">A featured project from Game Design</p>
           <h2 id="starfall-title" className="display mt-3 text-[clamp(56px,7vw,96px)]">StarFall</h2>
           <p className="mt-6 max-w-measure text-lg text-ivory/85">
-            My first video game, made in GameMaker. Stars fall from the night sky. Click them before they hit the ground.
+            My first video game, made in GameMaker. Stars fall from the night sky in waves. Click them before they hit the ground: three misses and the game is over.
           </p>
           <dl className="mt-8 grid grid-cols-3 gap-6 border-t border-rule pt-4 text-[15px]">
             <div><dt className="text-sm text-mist">Engine</dt><dd className="mt-1">GameMaker</dd></div>
             <div><dt className="text-sm text-mist">Language</dt><dd className="mt-1">GML</dd></div>
-            <div><dt className="text-sm text-mist">When</dt><dd className="mt-1">Week 2</dd></div>
+            <div><dt className="text-sm text-mist">When</dt><dd className="mt-1">Weeks 2 and 4</dd></div>
           </dl>
           <figure className="mt-8">
             <pre className="overflow-x-auto rounded-stage bg-graphite p-5 font-code text-[13px] leading-relaxed text-teal-soft"><code>{starCreate.trim()}</code></pre>

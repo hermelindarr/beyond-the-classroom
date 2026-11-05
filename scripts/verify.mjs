@@ -82,7 +82,7 @@ try {
     for (let fx = 0.06; fx < 1; fx += 0.06) {
       await page.mouse.click(box.x + box.width * fx, box.y + box.height * (0.15 + (t % 5) * 0.12));
     }
-    score = await page.evaluate(() => Number(document.querySelector("#gd-play [aria-live]").textContent.replace(/\D/g, "")));
+    score = await page.evaluate(() => Number(document.querySelector("#gd-play [aria-live]").textContent.match(/Score: (\d+)/)?.[1] ?? -1));
     await sleep(120);
   }
   check(score > 0, "Clicking a star pops it and adds score", `score ${score}`);
@@ -109,12 +109,14 @@ try {
   check(pressed === "false", "Music button reports its state (aria-pressed)");
   await page.click("#gd-play button[aria-keyshortcuts='M']");
   await page.$$eval("#gd-play button", (bs) => bs.find((b) => b.textContent === "Sound effects").click());
+  await page.click("#gd-play button[aria-keyshortcuts='R']"); // version 2.0: a fresh game, stars clickable again
   await page.evaluate(() => (window.__audio = []));
   for (let i = 0; i < 25; i++) { for (let fx = 0.06; fx < 1; fx += 0.06) await page.mouse.click(box.x + box.width * fx, box.y + box.height * 0.35); await sleep(80); }
   audio = await page.evaluate(() => window.__audio);
   check(!audio.some(([a, f]) => a === "play" && f === "snd_popSound.wav"), "Sound effects button mutes pops");
   await page.$$eval("#gd-play button", (bs) => bs.find((b) => b.textContent === "Sound effects").click());
   await page.$eval("#gd-play input[type=range]", (el) => { const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set; set.call(el, "30"); el.dispatchEvent(new Event("input", { bubbles: true })); });
+  await page.click("#gd-play button[aria-keyshortcuts='R']");
   await page.evaluate(() => (window.__audio = []));
   for (let i = 0; i < 25; i++) { for (let fx = 0.06; fx < 1; fx += 0.06) await page.mouse.click(box.x + box.width * fx, box.y + box.height * 0.35); await sleep(80); }
   audio = await page.evaluate(() => window.__audio);
@@ -132,7 +134,7 @@ try {
   await shot(page, "desktop-03-collision-boxes");
   await page.keyboard.press("r");
   await sleep(400);
-  const afterRestart = await page.evaluate(() => Number(document.querySelector("#gd-play [aria-live]").textContent.replace(/\D/g, "")));
+  const afterRestart = await page.evaluate(() => Number(document.querySelector("#gd-play [aria-live]").textContent.match(/Score: (\d+)/)?.[1] ?? -1));
   check(afterRestart === 0, "R restarts with score 0 (keyboard)");
   await page.keyboard.press("Space");
 
@@ -144,10 +146,8 @@ try {
   // Mechanics lab: keyboard between tabs + collision demo.
   await scrollToId(page, "gd-how");
   await page.focus("[role=tab][aria-selected=true]");
-  await page.keyboard.press("ArrowDown");
-  await page.keyboard.press("ArrowDown");
-  await page.keyboard.press("ArrowDown");
-  await page.keyboard.press("ArrowDown");
+  // Version 2.0 lists eleven events; Collision is seven steps below the default (manager Step).
+  for (let i = 0; i < 7; i++) await page.keyboard.press("ArrowDown");
   const tabNow = await page.$eval("[role=tab][aria-selected=true]", (t) => t.textContent);
   check(tabNow.includes("Collision"), "Arrow keys move between GML events", tabNow);
   await page.$eval("#gml-panel input[type=range]:nth-of-type(1)", () => {});
@@ -248,7 +248,7 @@ try {
   let mscore = 0;
   for (let t = 0; t < 60 && mscore === 0; t++) {
     for (let fx = 0.06; fx < 1; fx += 0.08) await m.touchscreen.tap(mbox.x + mbox.width * fx, mbox.y + mbox.height * (0.2 + (t % 5) * 0.12));
-    mscore = await m.evaluate(() => Number(document.querySelector("#gd-play [aria-live]").textContent.replace(/\D/g, "")));
+    mscore = await m.evaluate(() => Number(document.querySelector("#gd-play [aria-live]").textContent.match(/Score: (\d+)/)?.[1] ?? -1));
   }
   check(mscore > 0, "Mobile: tapping a star pops it", `score ${mscore}`);
   await m.screenshot({ path: path.join(OUT, "mobile-07-playing.png") });

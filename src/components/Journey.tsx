@@ -14,6 +14,8 @@ function marker(e: ProgramEvent) {
   if (isUpcoming(e.date)) return "upcoming";
   const subject = subjects.find((s) => s.id === e.subject);
   if (e.kind === "evidence" || subject?.status === "student") return "student";
+  // A workshop whose date has passed without evidence is a schedule fact, not class material.
+  if (subject?.status === "upcoming") return "program";
   if (subject) return "class";
   return "program";
 }

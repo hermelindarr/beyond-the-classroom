@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { StarFall, spritesReady } from "../../starfall/engine";
+import { LIVES, StarFall, spritesReady, type GameStatus } from "../../starfall/engine";
 import { SoundBank } from "../../starfall/sounds";
 
 /** The full game, with the project's music and sounds. */
@@ -10,7 +10,7 @@ export function PlayStage() {
   const soundsRef = useRef(new SoundBank());
   const [started, setStarted] = useState(false);
   const [paused, setPaused] = useState(false);
-  const [score, setScore] = useState(0);
+  const [status, setStatus] = useState<GameStatus>({ score: 0, wave: 1, starsLost: 0, gameOver: false });
   const [music, setMusic] = useState(true);
   const [effects, setEffects] = useState(true);
   const [volume, setVolume] = useState(70);
@@ -19,9 +19,18 @@ export function PlayStage() {
   useEffect(() => {
     const sounds = soundsRef.current;
     const game = new StarFall(canvasRef.current!, {
-      onScore: setScore,
+      onStatus: setStatus,
       onPop: () => sounds.effect("snd_popSound"),
       onGround: () => sounds.effect("snd_sadWhistleSound"),
+      // obj_gameManager Step_0: snd_gameOverSound, and the music stops.
+      onGameOver: () => {
+        sounds.effect("snd_gameOverSound");
+        sounds.stopMusic();
+      },
+      // room_restart() runs Create_0 again, which starts the music if it is not playing.
+      onRestart: () => {
+        if (game.running) sounds.startMusic();
+      },
     });
     gameRef.current = game;
     spritesReady().then(() => game.draw());
@@ -65,7 +74,7 @@ export function PlayStage() {
 
   const restart = () => {
     const g = gameRef.current!;
-    g.reset();
+    g.restart();
     g.draw();
     if (!g.running) togglePause();
   };
@@ -111,7 +120,7 @@ export function PlayStage() {
           tabIndex={0}
           className="block aspect-[1366/768] w-full cursor-crosshair touch-manipulation outline-none focus-visible:ring-2 focus-visible:ring-teal-soft"
           onPointerDown={(e) => started && !paused && gameRef.current?.click(e.clientX, e.clientY)}
-          aria-label="StarFall game. Click or tap the falling stars to pop them. Space pauses, R restarts, M mutes music, B shows collision boxes, F is full screen."
+          aria-label="StarFall game. Click or tap the falling stars to pop them; three stars on the ground end the game. Space pauses, R restarts, M mutes music, B shows collision boxes, F is full screen."
           role="application"
         />
         {!started && (
@@ -128,7 +137,11 @@ export function PlayStage() {
           </div>
         )}
       </div>
-      <p className="sr-only" aria-live="polite">Score: {score}</p>
+      <p className="sr-only" aria-live="polite">
+        {status.gameOver
+          ? `Game over. Score: ${status.score}. Click the Game Over sign or press R to play again.`
+          : `Score: ${status.score}. Wave ${Math.max(0, status.wave - 1)}. Stars lost: ${status.starsLost} of ${LIVES}.`}
+      </p>
 
       <div className="mx-auto mt-4 flex w-full max-w-[1180px] flex-wrap items-center gap-3 text-sm">
         <button type="button" className="btn" onClick={togglePause} aria-keyshortcuts="Space">{!started ? "Start" : paused ? "Resume" : "Pause"}</button>
@@ -145,9 +158,9 @@ export function PlayStage() {
         <button type="button" className="btn sm:ml-auto" onClick={fullscreen} aria-keyshortcuts="F">Full screen</button>
       </div>
       <p className="mx-auto mt-3 w-full max-w-[1180px] text-sm text-mist">
-        The rules and code come from my GameMaker project. My project uses the workshop's StarFall asset pack for sprites, music and sounds; this public version replaces them with simple placeholders, because they are not mine to redistribute.
-        The controls under the game were added for
-        this portfolio.
+        The rules and code come from version 2.0 of my GameMaker project: waves, three lives, Game Over and restart. The star, sky,
+        ground, explosion, music, pop and whistle are the workshop's StarFall asset pack; our instructor gave us the Game Over image, and we
+        added it, with its sound, in version 2.0 so the game would have an ending. This public version shows simple placeholders instead, because those files are not mine to redistribute. The controls under the game were added for this portfolio.
       </p>
     </div>
   );

@@ -83,8 +83,8 @@ export function ProjectAnatomy() {
   return (
     <div className="grid gap-x-8 gap-y-16 md:grid-cols-12">
       <div className="md:col-span-7">
-        <h3 className="heading text-xl">Four sprites</h3>
-        <p className="mt-2 flex items-center gap-2 text-sm text-mist"><span className="h-2 w-2 rounded-full bg-violet" aria-hidden="true" />My project uses the workshop's StarFall asset pack. This public version shows simple placeholders instead, because those files are not mine to redistribute.</p>
+        <h3 className="heading text-xl">Five sprites</h3>
+        <p className="mt-2 flex items-center gap-2 text-sm text-mist"><span className="h-2 w-2 rounded-full bg-violet" aria-hidden="true" />From the workshop's StarFall asset pack, used unchanged in my project. Version 2.0 adds spr_gameover, an image our instructor gave us. This public version shows simple placeholders instead, because those files are not mine to redistribute.</p>
         <div className="mt-6 grid grid-cols-[2fr_1fr_1fr] items-end gap-4">
           {[
             [sprites.space, "spr_space", "800 × 480, stretched to fill the room", "aspect-[5/3] p-0"],
@@ -102,6 +102,12 @@ export function ProjectAnatomy() {
             </figure>
           ))}
         </div>
+        <figure className="mt-6">
+          <div className="flex items-center justify-center rounded-evidence border border-rule bg-navy p-5">
+            <img src={sprites.gameOver} alt="spr_gameover sprite: the words GAME OVER in green pixel letters" className="w-[270px] max-w-full [image-rendering:pixelated]" />
+          </div>
+          <figcaption className="mt-2"><span className="block font-code text-[13px] text-teal-soft">spr_gameover</span><span className="text-sm text-mist">270 × 55, from our instructor, added in version 2.0</span></figcaption>
+        </figure>
         <div className="mt-8">
           <p className="mb-3"><span className="font-code text-[13px] text-teal-soft">spr_explosion</span> <span className="text-sm text-mist">· 9 frames, 128 × 128, 30 fps</span></p>
           <ExplosionFrames />
@@ -109,20 +115,22 @@ export function ProjectAnatomy() {
       </div>
 
       <div className="md:col-span-5">
-        <h3 className="heading text-xl">Three sounds</h3>
-        <p className="mt-2 flex items-center gap-2 text-sm text-mist"><span className="h-2 w-2 rounded-full bg-violet" aria-hidden="true" />From the same asset pack, replaced here by placeholder sounds</p>
+        <h3 className="heading text-xl">Four sounds</h3>
+        <p className="mt-2 flex items-center gap-2 text-sm text-mist"><span className="h-2 w-2 rounded-full bg-violet" aria-hidden="true" />Three from the same asset pack; version 2.0 adds the Game Over sound. Placeholder sounds in this public version</p>
         <ul className="mt-4 border-b border-rule">
           <SoundRow name="snd_wizardSong" use="Background music, looped from the start" />
           <SoundRow name="snd_popSound" use="A star is clicked" />
           <SoundRow name="snd_sadWhistleSound" use="A star reaches the ground" />
+          <SoundRow name="snd_gameOverSound" use="The third star is lost: Game Over" />
         </ul>
 
-        <h3 className="heading mt-12 text-xl">Four objects, one room</h3>
+        <h3 className="heading mt-12 text-xl">Five objects, one room</h3>
         <dl className="mt-4 divide-y divide-rule border-y border-rule text-[15px]">
           {[
-            ["obj_gameManager", "No sprite. Runs the music, the timer and the score."],
+            ["obj_gameManager", "No sprite. Runs the music, the waves, the lives and the score."],
             ["obj_star", "Falls, spins, can be clicked, hits the ground."],
-            ["obj_explosion", "Plays once, then removes itself."],
+            ["obj_explosion", "Plays once, then removes itself. Six are placed in the room and play at the start."],
+            ["obj_gameOver", "The Game Over sign. Clicking it restarts the room."],
             ["obj_ground", "Seven tiles. No code: only a collision target."],
             ["Room1", "1366 × 768 pixels, 60 steps per second."],
             ["scoreFont", "Sitka Small Semibold, 12 pt."],

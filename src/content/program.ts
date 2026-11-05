@@ -43,7 +43,7 @@ export type Subject = {
 };
 
 export const subjects: Subject[] = [
-  { id: "game-design", name: "Game Design", inside: "Game design theory in week 1. StarFall, my first game in GameMaker, started in week 2, with its code and my notes on player psychology", weeks: [1, 2, 4], status: "student", studentPieces: 5, classPieces: 2 },
+  { id: "game-design", name: "Game Design", inside: "Game design theory in week 1. StarFall, my first game in GameMaker, started in week 2 and grew into version 2.0 in week 4 (waves, three lives, Game Over), with its code and my notes on player psychology", weeks: [1, 2, 4], status: "student", studentPieces: 5, classPieces: 2 },
   { id: "drawing", name: "Drawing and Character Development", inside: "A layered digital pose drawing and five thumbnail sketches", weeks: [2, 3, 4], status: "student", studentPieces: 4, classPieces: 2 },
   { id: "harmony", name: "2D Animation in Harmony", inside: "Keyframe practice and a walk cycle on a rigged character", weeks: [1, 2, 3, 4], status: "student", studentPieces: 2, classPieces: 1 },
   { id: "blender", name: "3D Animation in Blender", inside: "My shortcut map from Harmony to Blender, and forward vs inverse kinematics", weeks: [2, 3, 4], status: "student", studentPieces: 1, classPieces: 0 },
@@ -51,7 +51,7 @@ export const subjects: Subject[] = [
   { id: "networking", name: "Networking and Cybersecurity", inside: "My notes on the OSI model, the CIA triad and safe habits online", weeks: [1], status: "student", studentPieces: 3, classPieces: 1 },
   { id: "itba", name: "IT Business Analysis", inside: "Requirements and prototyping for a time-off request app", weeks: [2], status: "class", studentPieces: 0, classPieces: 2 },
   { id: "ai-agents", name: "AI Agents and Generative AI", inside: "Class lectures so far; my own work will be added when it exists", weeks: [3], status: "class", studentPieces: 0, classPieces: 5 },
-  { id: "database", name: "Database Fundamentals Bootcamp", inside: "Scheduled for November 2", weeks: [4], status: "upcoming", studentPieces: 0, classPieces: 0 },
+  { id: "database", name: "Database Fundamentals Bootcamp", inside: "Tables, SQL and queries in DB Browser for SQLite, with my database Categoria.db", weeks: [4], status: "student", studentPieces: 1, classPieces: 0 },
   { id: "iot", name: "IoT Application Programming Interfaces", inside: "Scheduled for November 3", weeks: [4], status: "upcoming", studentPieces: 0, classPieces: 0 },
 ];
 
@@ -94,7 +94,9 @@ export const weeks: Week[] = [
       { date: "2026-10-26", title: "AI Agents", kind: "workshop", subject: "ai-agents" },
       { date: "2026-10-27", title: "Blender · Harmony rigging", kind: "workshop", subject: "blender" },
       { date: "2026-10-28", title: "Entrepreneurship workshop", kind: "program" },
+      { date: "2026-10-28", title: "Our business idea won", kind: "evidence" },
       { date: "2026-10-29", title: "Life drawing: gesture and drapery", kind: "workshop", subject: "drawing" },
+      { date: "2026-10-29", title: "My gesture sketches", kind: "evidence", subject: "drawing" },
       { date: "2026-10-29", title: "Portfolio Exchange check-up", kind: "program" },
       { date: "2026-10-30", title: "Game Jam social", kind: "program" },
       { date: "2026-11-01", title: "Sudbury Wolves hockey game", kind: "program" },
@@ -104,8 +106,11 @@ export const weeks: Week[] = [
     n: 4, label: "Presentation", start: "2026-11-02", end: "2026-11-07",
     events: [
       { date: "2026-11-02", title: "Game Design", kind: "workshop", subject: "game-design" },
+      { date: "2026-11-02", title: "StarFall 2.0: waves, lives, Game Over", kind: "evidence", subject: "game-design" },
       { date: "2026-11-02", title: "Database Bootcamp", kind: "workshop", subject: "database" },
+      { date: "2026-11-02", title: "My first SQL queries", kind: "evidence", subject: "database" },
       { date: "2026-11-03", title: "Blender · IoT APIs", kind: "workshop", subject: "iot" },
+      { date: "2026-11-03", title: "A 3D model in Blender", kind: "evidence", subject: "blender" },
       { date: "2026-11-04", title: "Harmony · Sacred Fire and Indigenous teaching", kind: "workshop", subject: "harmony" },
       { date: "2026-11-05", title: "Life drawing · Game Design", kind: "workshop", subject: "drawing" },
       { date: "2026-11-06", title: "Final presentations · Graduation", kind: "program" },

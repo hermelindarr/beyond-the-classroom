@@ -126,6 +126,51 @@ window.BTC_WEEKS = [
       "I also discovered something about myself. A skill doesn't have to come naturally to me for it to be worth learning. Drawing is still not my favourite activity, but it gave me an idea of the kind of games I want to make, with characters that are truly mine.",
     ],
   },
+  {
+    week: 3,
+    title: "An Idea That Won",
+    summary: "In week three, my team created a business idea and presented it, and our idea won. We also programmed a pumpkin with lights and a sensor.",
+    quote: "We created a business idea, presented it, and our idea won.",
+    opening: [],
+    parts: [
+      {
+        heading: "Entrepreneurship workshop",
+        text: [
+          "In the business workshop, we had to create a business idea and then present it in a presentation. Our idea won, and they gave us a basket full of things as a prize.",
+        ],
+      },
+      {
+        heading: "Build a pumpkin that bites back",
+        text: [
+          "In the pumpkin workshop, we programmed LED lights to turn on, and a sensor so that when someone came close, the pumpkin made a sound.",
+        ],
+      },
+    ],
+    closing: [],
+  },
+  {
+    week: 4,
+    title: "Databases and Version 2.0",
+    summary: "My last week is not over yet. So far: a database bootcamp, and a new version of my game.",
+    quote: "First we created tables, then we installed an app to work with SQL, and after that we learned queries.",
+    opening: [],
+    parts: [
+      {
+        heading: "Database Bootcamp",
+        text: [
+          "In the Database Bootcamp, we started by creating tables for databases. Then we installed an application, DB Browser for SQLite, and worked with SQL. After that, we looked at queries.",
+        ],
+      },
+      {
+        heading: "Game Design: StarFall 2.0",
+        page: "game-design",
+        text: [
+          "In Game Design, my StarFall project reached version 2.0. The stars now come in waves, each one bigger than the last. If three stars reach the ground, it is Game Over, and the game can start again with R or by clicking the sign. Our teacher gave us the Game Over image, and we added it so the game would have an ending.",
+        ],
+      },
+    ],
+    closing: [],
+  },
 ];
 
 // Optional: an extra line for one workshop page, in my own words.

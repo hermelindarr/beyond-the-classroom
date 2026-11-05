@@ -1,7 +1,9 @@
 import { useState } from "react";
+import lifeDrawing1 from "../assets/evidence/life-drawing-1.webp";
+import lifeDrawing2 from "../assets/evidence/life-drawing-2.webp";
 import { Internal } from "../components/Internal";
 import { Reflection } from "../components/Reflection";
-import { BackToWorkshops, Breadcrumb, Facts, Provenance, Section } from "../components/CaseStudy";
+import { Dot, BackToWorkshops, Breadcrumb, Facts, Provenance, Section } from "../components/CaseStudy";
 import { LayerViewer } from "./drawing/LayerViewer";
 import { Counterbalance, ShapeLanguage } from "./drawing/ClassIdeas";
 import pose from "../assets/evidence/drawing-pose.webp";
@@ -127,7 +129,16 @@ export function DrawingPage() {
         <p className="mt-8 text-sm text-mist">Sources: class slides “Character Design and Development” and “Character Posing!”.</p>
         <div className="mt-16 grid gap-10 md:grid-cols-12 md:gap-8">
           <div className="md:col-span-6"><Reflection topic="drawing" label="drawing" /></div>
-          <div className="md:col-span-6"><Internal block></Internal></div>
+          <figure className="md:col-span-6">
+            <div className="grid grid-cols-2 gap-4">
+              <img src={lifeDrawing1} alt="Quick pencil gesture sketches of a seated figure." loading="lazy" className="aspect-[4/3] w-full rounded-evidence object-cover" />
+              <img src={lifeDrawing2} alt="Quick pencil gesture sketches of standing and bending figures." loading="lazy" className="aspect-[4/3] w-full rounded-evidence object-cover" />
+            </div>
+            <figcaption className="mt-3 text-[15px]">
+              My gesture sketches from life drawing
+              <span className="mt-1 flex items-center gap-2 text-sm text-mist"><Dot tone="student" /> My work · Oct 29, according to the schedule</span>
+            </figcaption>
+          </figure>
         </div>
         <BackToWorkshops />
       </Section>

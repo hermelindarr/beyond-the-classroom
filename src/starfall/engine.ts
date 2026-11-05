@@ -1,34 +1,50 @@
-// StarFall, ported from Hermelinda's GameMaker project "juego Herme"
-// (GameMaker 2026.0.0.16, Room1 1366×768, option_game_speed 60).
-// Every rule cites the GML event it reproduces; see ADAPTATIONS for what
-// had to change to run in a browser.
+// StarFall, ported from Hermelinda's GameMaker project, version 2.0
+// (D:\2.0, saved Nov 2 2026; GameMaker 2026.0.0.16, Room1 1366×768,
+// option_game_speed 60). Every rule cites the GML event it reproduces; see
+// ADAPTATIONS for what had to change to run in a browser.
 
 import star from "../assets/starfall/spr_star.png";
 import space from "../assets/starfall/spr_space.png";
 import ground from "../assets/starfall/spr_ground.png";
+import gameOver from "../assets/starfall/spr_gameover.png";
 
 export const explosionFrames = Object.values(
   import.meta.glob<string>("../assets/starfall/spr_explosion-*.png", { eager: true, import: "default" }),
 );
-export const sprites = { star, space, ground };
+export const sprites = { star, space, ground, gameOver };
 
 export const ROOM = { w: 1366, h: 768, fps: 60 };
 export const SPRITE_FPS = 30; // spr_explosion playbackSpeed
-export const ALARM_STEPS = 60; // alarm_set(0, 60)
+/** Version 1's timer, alarm_set(0, 60). Commented out in 2.0, where waves replace it. */
+export const ALARM_STEPS = 60;
 export const SPEED_RANGE: [number, number] = [2.5, 7.5]; // random_range(2.5, 7.5)
 export const SPAWN_Y = -150;
+/** obj_gameManager Step_0: if (starsLost >= 3) → Game Over. */
+export const LIVES = 3;
 /** spr_star: origin (64,64), rectangle collision mask, bbox 0..126 × 16..108. */
 export const STAR_BOX = { left: -64, right: 62, top: -48, bottom: 44 };
 /** spr_ground: origin (0,0), rectangle mask, bbox 0..204 × 0..207. */
 export const GROUND_BOX = { w: 205, h: 208 };
+/** spr_gameover: 270 × 55, origin (135, 27). obj_gameOver is created at the room's centre. */
+export const GAME_OVER = { x: ROOM.w / 2, y: ROOM.h / 2, w: 270, h: 55, ox: 135, oy: 27 };
 /** obj_ground instances placed in Room1. */
 export const GROUND_TILES: [number, number][] = [[0, 576], [224, 544], [448, 576], [640, 576], [864, 544], [1088, 576], [1184, 576]];
-/** obj_star instances placed above the screen in Room1. */
-const ROOM_STARS: [number, number][] = [[198, -512], [710, -736], [422, -672], [6, -352], [1152, -736], [1155, -416], [742, -416]];
+/** Room1 in version 2.0 places no stars; six obj_explosion instances play once when the room starts. */
+const ROOM_EXPLOSIONS: [number, number][] = [[96, 256], [96, 384], [416, 384], [608, 384], [992, 416], [1216, 288]];
 
 export type Star = { x: number; y: number; speed: number; angle: number; tint: string };
 type Boom = { x: number; y: number; t: number };
-export type GameEvents = { onScore?: (n: number) => void; onPop?: () => void; onGround?: () => void };
+export type GameStatus = { score: number; wave: number; starsLost: number; gameOver: boolean };
+export type GameEvents = {
+  onScore?: (n: number) => void;
+  onPop?: () => void;
+  onGround?: () => void;
+  /** Score, wave, lives or Game Over changed. */
+  onStatus?: (s: GameStatus) => void;
+  onGameOver?: () => void;
+  /** room_restart(): the game started again. */
+  onRestart?: () => void;
+};
 
 export const random = (a: number, b: number) => a + Math.random() * (b - a);
 export const randomTint = () => {
@@ -41,10 +57,10 @@ function load(src: string) {
   img.src = src;
   return img;
 }
-const images = { star: load(star), space: load(space), ground: load(ground), boom: explosionFrames.map(load) };
+const images = { star: load(star), space: load(space), ground: load(ground), gameOver: load(gameOver), boom: explosionFrames.map(load) };
 export const explosionImages = images.boom;
 export const spritesReady = () =>
-  Promise.all([images.star, images.space, images.ground, ...images.boom].map((i) => (i.complete ? Promise.resolve() : i.decode().catch(() => {}))));
+  Promise.all([images.star, images.space, images.ground, images.gameOver, ...images.boom].map((i) => (i.complete ? Promise.resolve() : i.decode().catch(() => {}))));
 
 const tintCache = new Map<string, HTMLCanvasElement>();
 /** image_blend: GameMaker multiplies the sprite by the blend colour. */
@@ -83,14 +99,23 @@ export function drawBackground(ctx: CanvasRenderingContext2D) {
   if (images.space.complete) ctx.drawImage(images.space, 0, 0, ROOM.w, ROOM.h); // Background layer, stretch: true
 }
 
-/** Draw_64 (Draw GUI): draw_text(x, y, "Score: " + string(gameScore)) at the manager's position (0,0). */
-export function drawScore(ctx: CanvasRenderingContext2D, score: number) {
+/**
+ * Draw_64 (Draw GUI) at the manager's position (0,0). Version 2.0 draws
+ * "Wave:" + string(wave - 1) + "             Score: " + string(gameScore);
+ * without a wave it draws version 1's "Score: " + string(gameScore).
+ */
+export function drawScore(ctx: CanvasRenderingContext2D, score: number, wave?: number) {
   ctx.save();
   ctx.fillStyle = "#fff";
   ctx.textBaseline = "top";
   ctx.font = '600 16px "Sitka Small Semibold", "Sitka Small", Sitka, Georgia, serif'; // scoreFont: 12 pt
-  ctx.fillText(`Score: ${score}`, 0, 0);
+  ctx.fillText(wave === undefined ? `Score: ${score}` : `Wave:${wave - 1}             Score: ${score}`, 0, 0);
   ctx.restore();
+}
+
+/** obj_gameOver: spr_gameover drawn at the room's centre. */
+export function drawGameOver(ctx: CanvasRenderingContext2D) {
+  if (images.gameOver.complete) ctx.drawImage(images.gameOver, GAME_OVER.x - GAME_OVER.ox, GAME_OVER.y - GAME_OVER.oy);
 }
 
 /** Rectangle-vs-rectangle test, as GameMaker does with rectangle masks. */
@@ -101,10 +126,12 @@ export function starHitsGround(s: Pick<Star, "x" | "y">) {
 
 export class StarFall {
   score = 0;
+  wave = 1;
+  starsLost = 0;
+  gameOver = false;
   showBoxes = false;
   private stars: Star[] = [];
   private booms: Boom[] = [];
-  private alarm = ALARM_STEPS;
   private raf = 0;
   private last = 0;
   private acc = 0;
@@ -121,14 +148,30 @@ export class StarFall {
     return this.raf !== 0;
   }
 
-  /** Room start: obj_gameManager Create_0 (score 0, alarm 60) and the placed stars. */
+  /**
+   * Room start: obj_gameManager Create_0 (score 0, starsLost 0, gameOver
+   * false, wave 1) and the six explosions placed in Room1. No stars yet:
+   * the first Step sends wave 1.
+   */
   reset() {
     this.score = 0;
-    this.alarm = ALARM_STEPS;
+    this.wave = 1;
+    this.starsLost = 0;
+    this.gameOver = false;
     this.stars = [];
-    this.booms = [];
-    ROOM_STARS.forEach(([x, y]) => this.spawn(x, y));
+    this.booms = ROOM_EXPLOSIONS.map(([x, y]) => ({ x, y, t: 0 }));
     this.events.onScore?.(0);
+    this.status();
+  }
+
+  /** room_restart(): KeyPress_82 (R) or a click on the Game Over sign, once the game is over. */
+  restart() {
+    this.reset();
+    this.events.onRestart?.();
+  }
+
+  private status() {
+    this.events.onStatus?.({ score: this.score, wave: this.wave, starsLost: this.starsLost, gameOver: this.gameOver });
   }
 
   /** obj_star Create_0: direction 270 (down), random speed, tint and angle. */
@@ -137,13 +180,20 @@ export class StarFall {
   }
 
   /**
-   * obj_star Mouse_4 (Left Pressed): fires on every star under the pointer.
-   * Each one plays snd_popSound, is destroyed, leaves an obj_explosion and adds 1.
+   * A left click. While playing, obj_star Mouse_4 fires on every star under
+   * the pointer: snd_popSound, destroy, an obj_explosion and one point.
+   * After Game Over, stars ignore clicks and obj_gameOver Mouse_4 restarts
+   * the room when its sign is clicked.
    */
   click(clientX: number, clientY: number): number {
     const r = this.canvas.getBoundingClientRect();
     const x = ((clientX - r.left) / r.width) * ROOM.w;
     const y = ((clientY - r.top) / r.height) * ROOM.h;
+    if (this.gameOver) {
+      const l = GAME_OVER.x - GAME_OVER.ox, t = GAME_OVER.y - GAME_OVER.oy;
+      if (x >= l && x < l + GAME_OVER.w && y >= t && y < t + GAME_OVER.h) this.restart();
+      return 0;
+    }
     const hit = this.stars.filter((s) => x >= s.x + STAR_BOX.left && x <= s.x + STAR_BOX.right && y >= s.y + STAR_BOX.top && y <= s.y + STAR_BOX.bottom);
     if (!hit.length) return 0;
     this.stars = this.stars.filter((s) => !hit.includes(s));
@@ -153,24 +203,38 @@ export class StarFall {
       this.score++;
     }
     this.events.onScore?.(this.score);
+    this.status();
     return hit.length;
   }
 
   private step() {
-    // obj_gameManager Alarm_0: a new star at a random x, above the room, every 60 steps.
-    if (--this.alarm <= 0) {
-      this.spawn(random(0 + 50, ROOM.w - 50), SPAWN_Y);
-      this.alarm = ALARM_STEPS;
+    // obj_gameManager Step_0: when no star is left, a wave of `wave` stars
+    // above the room at random x positions, and the next wave is one bigger.
+    // (It keeps sending waves after Game Over, as in the project.)
+    if (this.stars.length <= 0) {
+      for (let i = 0; i < this.wave; i++) this.spawn(random(0 + 50, ROOM.w - 50), SPAWN_Y);
+      this.wave++;
+      this.status();
+    }
+    // Step_0, second part: three stars lost → obj_gameOver, snd_gameOverSound, music stops.
+    if (this.starsLost >= LIVES && !this.gameOver) {
+      this.gameOver = true;
+      this.events.onGameOver?.();
+      this.status();
     }
     for (const s of this.stars) {
       s.angle += 1; // obj_star Step_0
       s.y += s.speed; // built-in motion from speed and direction 270
     }
-    // obj_star Collision_obj_ground: snd_sadWhistleSound, then destroy.
+    // obj_star Collision_obj_ground: the whistle (only while playing), one star lost, destroy.
     const landed = this.stars.filter(starHitsGround);
     if (landed.length) {
       this.stars = this.stars.filter((s) => !landed.includes(s));
-      landed.forEach(() => this.events.onGround?.());
+      for (let i = 0; i < landed.length; i++) {
+        if (!this.gameOver) this.events.onGround?.();
+        this.starsLost++;
+      }
+      this.status();
     }
     // obj_explosion Other_7 (Animation End): destroy.
     this.booms = this.booms.filter((b) => (b.t += SPRITE_FPS / ROOM.fps) < explosionFrames.length);
@@ -215,8 +279,9 @@ export class StarFall {
       if (f?.complete) ctx.drawImage(f, b.x - 64, b.y - 64);
     }
     drawGround(ctx);
+    if (this.gameOver) drawGameOver(ctx); // obj_gameOver, depth 0: above the stars (depth 1)
     if (this.showBoxes) this.drawBoxes();
-    drawScore(ctx, this.score);
+    drawScore(ctx, this.score, this.wave);
   }
 
   private drawBoxes() {

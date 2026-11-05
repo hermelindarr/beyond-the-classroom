@@ -15,23 +15,31 @@ import gameOverview from "../assets/notebook/game-overview.webp";
 const links = [
   { idea: "Chance", note: "chance = uncertainty = surprise", game: "random_range picks every star's speed, colour, angle and position.", code: "speed = random_range(2.5, 7.5)" },
   { idea: "Skill", note: "physical skills: strength, dexterity, coordination", game: "The player has to click a moving target before it lands.", code: "Left Pressed → instance_destroy()" },
-  { idea: "Time", note: "mechanics of space and time", game: "A new star arrives every 60 steps, one second of play.", code: "alarm_set(0, 60)" },
-  { idea: "Competence", note: "games are full of competency markers, like scores and progress bars", game: "Every pop adds one point, always visible on screen.", code: "obj_gameManager.gameScore++" },
+  { idea: "Time", note: "mechanics of space and time", game: "A new wave starts as soon as the last star is gone, and every wave brings one more star.", code: "for (var i = 0; i < wave; i += 1)" },
+  { idea: "Competence", note: "games are full of competency markers, like scores and progress bars", game: "Every pop adds one point, and the wave number shows how far you got. Both are always on screen.", code: "obj_gameManager.gameScore++" },
 ];
 
 const original = [
-  "Game rules: all eight GML events, line for line",
-  "Room1 layout: size, background, the seven ground tiles and seven starting stars",
-  "The explosion's 9 frames at 30 fps (sprites shown here are placeholders: the workshop's asset pack is not redistributed)",
-  "Three sounds: looping music, pop, sad whistle (placeholders in this public version)",
+  "Game rules: all eleven GML events of version 2.0, line for line",
+  "Room1 layout: size, background, the seven ground tiles and the six explosions that play at the start",
+  "The explosion's 9 frames at 30 fps (sprites shown here are placeholders: the workshop's asset pack and the instructor's Game Over image are not redistributed)",
+  "Four sounds: looping music, pop, sad whistle and Game Over (placeholders in this public version)",
   "Rectangle collision masks and their sizes",
   "60 steps per second, as set in the project options",
   "Score font: Sitka Small Semibold, 12 pt",
 ];
+// Dated by the GameMaker files on my USB drive.
+const versions = [
+  { name: "First session", date: "Oct 19 · week 2", file: "Linda.yyz", what: "One object, obj_star. Three stars placed in the room fall with a random speed and colour, spin, and disappear when clicked. No ground, score or sound yet." },
+  { name: "Version 1", date: "Oct 22 · week 2", file: "juego Herme", what: "The full game loop: a game manager, the ground and its collisions, the explosion, the score, music and sounds, and a new star every 60 steps." },
+  { name: "Version 2.0", date: "Nov 2 · week 4", file: "2.0", what: "Waves instead of the timer, each one star bigger. Three stars on the ground mean Game Over, with its own sign and sound; R or a click on the sign starts again. This is the version you can play above." },
+  { name: "Last session", date: "Nov 5 · week 4", upcoming: true, what: "The last Game Design session, for improvements to the game." },
+] as { name: string; date: string; file?: string; upcoming?: boolean; what: string }[];
+
 const adapted = [
   "Runs on an HTML canvas instead of the GameMaker runner",
   "A Start button, because browsers only play sound after a click",
-  "Pause, restart, sound, collision-box and full-screen controls, added for this portfolio",
+  "Pause, restart, sound, collision-box and full-screen controls, added for this portfolio (the R key restarts at any time, not only after Game Over)",
   "The game scales to fit the screen; GameMaker uses a fixed 1366 × 768 window",
   "Touch works like a mouse click on phones and tablets",
   "On slow computers it draws at a lower resolution; positions, speeds and collisions do not change",
@@ -58,10 +66,11 @@ export function GameDesignPage() {
           <div className="mt-14 grid gap-10 md:grid-cols-12 md:gap-8">
             <p className="max-w-measure text-lg text-ivory/85 md:col-span-5">
               My first video game. I built it in GameMaker during the Game Design workshop at Cambrian College: stars fall
-              from the night sky, and you click them before they hit the ground.
+              from the night sky, and you click them before they hit the ground. In version 2.0 they come in waves, and three stars on
+              the ground end the game.
             </p>
             <div className="md:col-span-6 md:col-start-7">
-              <Facts items={[["Workshop", "Game Design, week 2"], ["Engine", "GameMaker 2026"], ["Language", "GML"], ["Scope", "4 objects, 8 events"]]} />
+              <Facts items={[["Workshop", "Game Design, weeks 2 and 4"], ["Engine", "GameMaker 2026"], ["Language", "GML"], ["Scope", "5 objects, 11 events"]]} />
             </div>
           </div>
           <Internal></Internal>
@@ -112,8 +121,25 @@ export function GameDesignPage() {
         <ExplodedRoom />
       </Section>
 
-      <Section id="gd-how" title="How it works" intro={<p>The whole game is eight short events. Choose one to see the code from my project and try what it does.</p>}>
+      <Section id="gd-how" title="How it works" intro={<p>Version 2.0 of the game is eleven short events. Choose one to see the code from my project and try what it does.</p>}>
         <MechanicsLab />
+      </Section>
+
+      <Section id="gd-versions" title="Three versions" intro={<p>The project files on my USB drive show how the game grew, session by session.</p>}>
+        <ol className="border-b border-rule">
+          {versions.map((v) => (
+            <li key={v.date} className={`grid gap-3 border-t border-rule py-7 md:grid-cols-12 md:gap-8 ${v.upcoming ? "text-ivory/60" : ""}`}>
+              <div className="md:col-span-3">
+                <p className="font-display text-2xl font-semibold tracking-tight">{v.name}</p>
+                <p className="mt-1 text-sm text-mist">{v.date}</p>
+              </div>
+              <p className="max-w-measure text-ivory/85 md:col-span-6">{v.what}</p>
+              <p className="text-sm text-mist md:col-span-3">
+                {v.upcoming ? <span className="chip chip-upcoming">Upcoming</span> : <span className="flex items-center gap-2"><Dot tone="student" /> {v.file}</span>}
+              </p>
+            </li>
+          ))}
+        </ol>
       </Section>
 
       <Section id="gd-notes" title="From my notes to my game" intro={<p>What I wrote down in the workshop, and where it shows up in StarFall.</p>}>

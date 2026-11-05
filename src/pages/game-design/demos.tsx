@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
-  ALARM_STEPS, drawBackground, drawGround, drawScore, drawStar, explosionFrames, explosionImages, GROUND_BOX, GROUND_TILES, random, randomTint,
+  ALARM_STEPS, drawBackground, drawGround, drawScore, LIVES, sprites, drawStar, explosionFrames, explosionImages, GROUND_BOX, GROUND_TILES, random, randomTint,
   ROOM, SPAWN_Y, SPEED_RANGE, SPRITE_FPS, spritesReady, STAR_BOX, starHitsGround, type Star,
 } from "../../starfall/engine";
 import { SoundBank } from "../../starfall/sounds";
@@ -83,7 +83,7 @@ function strokeBox(c: CanvasRenderingContext2D, x: number, y: number, w: number,
   c.restore();
 }
 
-/* Alarm 0 + Create: the game loop and spawning. */
+/* Alarm 0 (version 1): one star every 60 steps. Version 2.0 switched it off. */
 export function SpawnDemo() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [running, setRunning] = useState(!prefersReducedMotion());
@@ -115,7 +115,8 @@ export function SpawnDemo() {
 
   return (
     <div>
-      <Room canvasRef={canvasRef} label="A new star appears above the room every 60 steps." />
+      <p className="mb-3 text-sm text-mist">Version 1 (Oct 22), before waves replaced the timer.</p>
+      <Room canvasRef={canvasRef} label="Version 1: a new star appears above the room every 60 steps." />
       <div className="mt-4" aria-hidden="true">
         <div className="grid grid-cols-[repeat(60,1fr)] gap-[2px]">
           {Array.from({ length: ALARM_STEPS }, (_, i) => (
@@ -382,22 +383,87 @@ export function AnimationEndDemo() {
 export function GuiDemo() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [score, setScore] = useState(3);
+  const [wave, setWave] = useState(3);
   useEffect(() => {
     spritesReady().then(() => {
       const c = canvasRef.current?.getContext("2d");
       if (!c) return;
       drawBackground(c);
       drawGround(c);
-      drawScore(c, score);
-      strokeBox(c, 0, 0, 150, 26, "#1FA7A5", true);
+      drawScore(c, score, wave);
+      strokeBox(c, 0, 0, 260, 26, "#1FA7A5", true);
     });
-  }, [score]);
+  }, [score, wave]);
   return (
     <div>
-      <Room canvasRef={canvasRef} label={`The score text, Score: ${score}, drawn at the top-left corner.`} />
+      <Room canvasRef={canvasRef} label={`The interface text, Wave:${wave - 1} and Score: ${score}, drawn at the top-left corner.`} />
       <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
-        <p className="font-code text-[13px] text-teal-soft">"Score: " + string({score})</p>
-        <button type="button" className="btn ml-auto" onClick={() => setScore(score + 1)}>gameScore++</button>
+        <p className="font-code text-[13px] text-teal-soft">"Wave:" + string(wave-1) + "  Score: " + string({score})</p>
+        <span className="flex-1" />
+        <button type="button" className="btn" onClick={() => setWave(wave + 1)}>wave++</button>
+        <button type="button" className="btn" onClick={() => setScore(score + 1)}>gameScore++</button>
+      </div>
+    </div>
+  );
+}
+
+/*
+ * obj_gameManager Step_0 (version 2.0): waves and three lives, with
+ * Create_0's starting values and the two ways to restart after Game Over.
+ * A step-by-step model of the rules, without the falling animation.
+ */
+export function WavesDemo() {
+  const start = { wave: 1, stars: 0, starsLost: 0, gameOver: false, score: 0 };
+  const [s, setS] = useState(start);
+  const [log, setLog] = useState("Room start: no stars yet, wave = 1.");
+
+  // Step_0: no star left → a wave of `wave` stars, then wave++.
+  // Three stars lost → Game Over.
+  const settle = (n: typeof start, msg: string) => {
+    let next = { ...n };
+    let text = msg;
+    if (next.starsLost >= LIVES && !next.gameOver) {
+      next = { ...next, gameOver: true };
+      text += " Three stars lost: Game Over, its sound plays and the music stops.";
+    }
+    if (next.stars <= 0) {
+      text += ` No star left: wave ${next.wave} sends ${next.wave} star${next.wave > 1 ? "s" : ""}.`;
+      next = { ...next, stars: next.wave, wave: next.wave + 1 };
+    }
+    setS(next);
+    setLog(text.trim());
+  };
+  useEffect(() => settle(start, "Room start: no stars yet, wave = 1."), []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const pop = () => settle({ ...s, stars: s.stars - 1, score: s.score + 1 }, "A star is clicked: pop, explosion, one point.");
+  const land = () => settle({ ...s, stars: s.stars - 1, starsLost: s.starsLost + 1 }, s.gameOver ? "A star lands after Game Over: still counted, but no whistle." : "A star reaches the ground: sad whistle, one star lost.");
+  const restart = () => settle(start, "room_restart(): Create_0 runs again.");
+
+  return (
+    <div className="rounded-stage border border-rule bg-graphite p-5 md:p-6">
+      <div className="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p className="text-sm text-mist">Stars falling now</p>
+          <div className="mt-2 flex min-h-[40px] flex-wrap gap-1" aria-hidden="true">
+            {Array.from({ length: s.stars }, (_, i) => <img key={i} src={sprites.star} alt="" className="h-9 w-9 [image-rendering:pixelated]" />)}
+          </div>
+        </div>
+        <div>
+          <p className="text-sm text-mist">Stars lost</p>
+          <div className="mt-2 flex gap-2" aria-hidden="true">
+            {Array.from({ length: LIVES }, (_, i) => <span key={i} className={`h-4 w-8 rounded-full ${i < s.starsLost ? "bg-amber" : "border border-rule"}`} />)}
+          </div>
+        </div>
+      </div>
+      <p className="mt-5 font-code text-[13px] text-teal-soft">
+        instance_number(obj_star) = {s.stars} · wave = {s.wave} · starsLost = {s.starsLost} · gameOver = {String(s.gameOver)} · gameScore = {s.score}
+      </p>
+      {s.gameOver && <img src={sprites.gameOver} alt="Game Over sign" className="mt-4 h-11 [image-rendering:pixelated]" />}
+      <p aria-live="polite" className="mt-4 text-[15px] text-ivory/85">{log}</p>
+      <div className="mt-5 flex flex-wrap gap-3 text-sm">
+        <button type="button" className="btn" onClick={pop} disabled={s.gameOver || s.stars <= 0}>Click a star</button>
+        <button type="button" className="btn" onClick={land} disabled={s.stars <= 0}>Let a star land</button>
+        <button type="button" className="btn" onClick={restart} disabled={!s.gameOver}>Restart (R or click the sign)</button>
       </div>
     </div>
   );

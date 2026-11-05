@@ -1,11 +1,13 @@
-// The three sounds from the GameMaker project, played with <audio> so they
+// The four sounds from the GameMaker project (version 2.0 adds Game Over),
+// played with <audio> so they
 // work from file:// with no server. Files live in public/starfall/.
 
-export type SoundName = "snd_popSound" | "snd_sadWhistleSound" | "snd_wizardSong";
+export type SoundName = "snd_popSound" | "snd_sadWhistleSound" | "snd_gameOverSound" | "snd_wizardSong";
 
 export const soundFiles: Record<SoundName, string> = {
   snd_popSound: "./starfall/snd_popSound.wav",
   snd_sadWhistleSound: "./starfall/snd_sadWhistleSound.wav",
+  snd_gameOverSound: "./starfall/snd_gameOverSound.wav",
   // Public version: an original placeholder loop replaces the workshop's music.
   snd_wizardSong: "./starfall/snd_music.wav",
 };
@@ -35,7 +37,7 @@ export class SoundBank {
     a.play().catch(() => {});
   }
 
-  /** obj_gameManager Create_0: audio_play_sound(snd_wizardSong, 1, true) — looped. */
+  /** obj_gameManager Create_0: if (!audio_is_playing(snd_wizardSong)) audio_play_sound(snd_wizardSong, 1, true). */
   startMusic() {
     if (!this.song) {
       this.song = this.template("snd_wizardSong");
@@ -47,6 +49,13 @@ export class SoundBank {
 
   pauseMusic() {
     this.song?.pause();
+  }
+
+  /** audio_stop_sound(snd_wizardSong) at Game Over: the next start begins from the top. */
+  stopMusic() {
+    if (!this.song) return;
+    this.song.pause();
+    this.song.currentTime = 0;
   }
 
   setMusic(on: boolean) {

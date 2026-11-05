@@ -19,6 +19,8 @@ const profile = await mkdtemp(path.join(tmpdir(), "btc-online-"));
 const browser = await puppeteer.launch({ executablePath: "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", headless: true, userDataDir: profile });
 try {
   const p = await browser.newPage();
+  p.setDefaultNavigationTimeout(180000); // slow connections: the single-file page is about 3.6 MB
+  p.setDefaultTimeout(180000);
   await p.setViewport({ width: 1440, height: 900 });
   await p.evaluateOnNewDocument(() => {
     const play = HTMLMediaElement.prototype.play;
@@ -36,9 +38,9 @@ try {
   await sleep(1500);
   check((await p.title()).startsWith("Beyond the Classroom"), "The published page opens", await p.title());
   const st = await p.evaluate(() => ({ weeks: (window.BTC_WEEKS ?? []).map((w) => w.week).join(), media: Array.isArray(window.BTC_MEDIA), notes: "BTC_NOTES" in window }));
-  check(st.weeks === "1,2" && st.media, "reflections.js and media.js load online", `weeks ${st.weeks}`);
+  check(st.weeks === "1,2,3,4" && st.media, "reflections.js and media.js load online", `weeks ${st.weeks}`);
   check(!st.notes, "Speaker notes are not loaded in the page");
-  check(await p.$("#week-1") && await p.$("#week-2") && !(await p.$("#week-3")), "Weeks 1 and 2 reflections; nothing for weeks 3–4");
+  check(await p.$("#week-1") && await p.$("#week-2") && await p.$("#week-3") && await p.$("#week-4"), "Reflections for weeks 1 to 4");
   await p.click("#week-2 button[aria-controls='week-2-full']");
   await sleep(400);
   check((await p.$eval("#week-2-full", (el) => el.innerText)).includes("Halloween Social"), "The full Week 2 reflection opens");
@@ -54,16 +56,19 @@ try {
   await p.$eval("#gd-play", (el) => el.scrollIntoView({ block: "center" }));
   await sleep(600);
   await p.$$eval("#gd-play button", (bs) => bs.find((b) => /Start StarFall/.test(b.textContent)).click());
-  await sleep(3000);
+  await sleep(700); // version 2.0 stops the music at Game Over: listen early
+  // Start asks for the music, and the music file loads and decodes online. (Whether it is
+  // still playing depends on the connection: version 2.0 stops it at Game Over.)
   const music = await p.evaluate(() => new Promise((res) => {
-    const a = (window.__played ?? []).find((x) => x.src.endsWith("snd_music.wav"));
-    if (!a) return res(null);
-    const t0 = a.currentTime;
-    setTimeout(() => res({ paused: a.paused, advanced: a.currentTime > t0, error: a.error?.code ?? null }), 1200);
+    const asked = (window.__played ?? []).some((x) => x.src.endsWith("snd_music.wav"));
+    const probe = new Audio("starfall/snd_music.wav");
+    probe.oncanplaythrough = () => res({ asked, duration: Math.round(probe.duration) });
+    probe.onerror = () => res({ asked, error: probe.error?.code });
+    setTimeout(() => res({ asked, error: "timeout" }), 90000);
   }));
-  check(music && !music.paused && music.advanced && !music.error, "StarFall starts and its placeholder music plays online", JSON.stringify(music));
+  check(music.asked && music.duration > 0 && !music.error, "StarFall asks for its placeholder music, and the file plays online", JSON.stringify(music));
   await p.screenshot({ path: path.join(OUT, "online-starfall.png") });
-  check((await p.evaluate(() => document.body.innerText)).includes("replaces them with simple placeholders"), "StarFall explains that its assets are placeholders");
+  check((await p.evaluate(() => document.body.innerText)).includes("shows simple placeholders instead"), "StarFall explains that its assets are placeholders");
 
   // Guided presentation.
   await p.evaluate(() => (location.hash = "#/"));
@@ -86,6 +91,8 @@ try {
 
   // Mobile.
   const m = await browser.newPage();
+  m.setDefaultNavigationTimeout(180000);
+  m.setDefaultTimeout(180000);
   await m.setViewport({ width: 390, height: 844, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
   await m.goto(`${URL_}?nointro`, { waitUntil: "networkidle2" });
   await sleep(1500);

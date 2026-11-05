@@ -29,6 +29,11 @@ export class SoundBank {
     return a;
   }
 
+  /** Start downloading every sound before Start is pressed (GameMaker has them loaded already). */
+  preload() {
+    (Object.keys(soundFiles) as SoundName[]).forEach((n) => this.template(n));
+  }
+
   /** audio_play_sound(snd, 1, false): a fresh copy so overlapping pops all play. */
   effect(name: Exclude<SoundName, "snd_wizardSong">) {
     if (!this.effects) return;

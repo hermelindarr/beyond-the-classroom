@@ -34,6 +34,8 @@ export function PlayStage() {
     });
     gameRef.current = game;
     spritesReady().then(() => game.draw());
+    // Online, the music can take a while to download: start before the player presses Start.
+    sounds.preload();
     // Leaving the stage pauses the game and the music.
     const io = new IntersectionObserver(([e]) => {
       if (!e.isIntersecting && game.running) {

@@ -10,6 +10,12 @@ import lifeDrawing2 from "../assets/evidence/life-drawing-2.webp";
 import blender from "../assets/evidence/blender-model.webp";
 import hockey from "../assets/evidence/hockey-game.webp";
 import pumpkin from "../assets/evidence/pumpkin-workshop.webp";
+import pumpkinParts from "../assets/evidence/pumpkin-parts.webp";
+import iotLab from "../assets/evidence/iot-lab.webp";
+import drawingStudio from "../assets/evidence/drawing-studio.webp";
+import drawingWall from "../assets/evidence/drawing-wall.webp";
+import lifeNov5a from "../assets/evidence/life-drawing-nov5-1.webp";
+import lifeNov5b from "../assets/evidence/life-drawing-nov5-2.webp";
 
 type Piece = { src: string; alt: string; caption: string; subject: string; area: string; fit?: "contain"; mine?: boolean };
 
@@ -29,8 +35,14 @@ const later: Piece[] = [
   { src: lifeDrawing1, alt: "Quick pencil gesture sketches of a seated figure on paper clipped to a board.", caption: "Gesture sketches from life drawing", subject: "Drawing", area: "md:col-span-4", mine: true },
   { src: lifeDrawing2, alt: "Several quick pencil gesture sketches of standing and bending figures on paper.", caption: "More gesture sketches from the same session", subject: "Drawing", area: "md:col-span-4", mine: true },
   { src: pumpkin, alt: "A carved pumpkin with a glowing face on a table.", caption: "“Build a pumpkin that bites back”: we programmed LED lights, and a sensor that made a sound when someone came close", subject: "Program event", area: "md:col-span-4" },
-  { src: blender, alt: "Blender on a tablet screen: a 3D model of a four-legged object next to a wood texture.", caption: "A 3D model in Blender, Nov 3", subject: "3D Animation in Blender", area: "md:col-span-6" },
-  { src: hockey, alt: "An ice hockey game seen from the stands of an indoor arena.", caption: "Sudbury Wolves hockey game", subject: "Program event", area: "md:col-span-6" },
+  { src: pumpkinParts, alt: "Parts laid out on a white tablecloth: an Arduino board, a breadboard, jumper wires, a battery, a buzzer and an ultrasonic sensor.", caption: "The parts for the pumpkin, before we built it", subject: "Program event", area: "md:col-span-4" },
+  { src: drawingStudio, alt: "The drawing studio: a round platform for the model in the middle of the room, with easels and benches around it.", caption: "The life drawing studio", subject: "Drawing", area: "md:col-span-4" },
+  { src: drawingWall, alt: "Small storyboard sketches on sticky notes, pinned to a wall.", caption: "Storyboard sketches pinned up in class", subject: "Drawing", area: "md:col-span-4" },
+  { src: iotLab, alt: "My laptop showing an IoT dashboard, next to a small circuit on a breadboard, in a computer lab.", caption: "The IoT lab: the dashboard on my laptop and the circuit, Nov 3", subject: "IoT APIs", area: "md:col-span-4" },
+  { src: blender, alt: "Blender on a tablet screen: a 3D model of a four-legged object next to a wood texture.", caption: "A 3D model in Blender, Nov 3", subject: "3D Animation in Blender", area: "md:col-span-4" },
+  { src: hockey, alt: "An ice hockey game seen from the stands of an indoor arena.", caption: "Sudbury Wolves hockey game", subject: "Program event", area: "md:col-span-4" },
+  { src: lifeNov5a, alt: "My pencil life drawing of a seated figure wrapped in drapery, with a bracelet on one leg.", caption: "Life drawing, Nov 5: a seated figure with drapery", subject: "Drawing", area: "md:col-span-6", fit: "contain", mine: true },
+  { src: lifeNov5b, alt: "My pencil life drawing of a figure sitting on a stool with crossed legs.", caption: "Life drawing, Nov 5: a figure on a stool", subject: "Drawing", area: "md:col-span-6", fit: "contain", mine: true },
 ];
 
 export function Evidence() {
@@ -67,7 +79,7 @@ export function Evidence() {
           {later.map((p) => (
             <figure key={p.src} className={p.area}>
               <div className="overflow-hidden rounded-evidence bg-graphite">
-                <img src={p.src} alt={p.alt} loading="lazy" className="aspect-[16/10] w-full object-cover" />
+                <img src={p.src} alt={p.alt} loading="lazy" className={p.fit === "contain" ? "max-h-[620px] w-full object-contain" : "aspect-[16/10] w-full object-cover"} />
               </div>
               <figcaption className="mt-3 text-[15px]">
                 {p.caption}

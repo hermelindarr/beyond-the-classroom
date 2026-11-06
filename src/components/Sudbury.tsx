@@ -1,6 +1,50 @@
 import { identity } from "../content/program";
 import { Internal } from "./Internal";
 import { Reflection } from "./Reflection";
+import bellPath from "../assets/canada/bell-park-path.webp";
+import bellTrees from "../assets/canada/bell-park-trees.webp";
+import bellBoardwalk from "../assets/canada/bell-park-boardwalk.webp";
+import bellLake from "../assets/canada/bell-park-lake.webp";
+import tunnel from "../assets/canada/outing-tunnel.webp";
+import farmHoney from "../assets/canada/farm-honey.webp";
+import farmTrail from "../assets/canada/farm-trail.webp";
+import farmBottles from "../assets/canada/farm-bottles.webp";
+import wonderland from "../assets/canada/wonderland.webp";
+import bracelets from "../assets/canada/bracelets.webp";
+
+type Shot = { src: string; alt: string; caption: string; area: string };
+
+// My own photos from outside class. Photos where classmates' faces show are left out on purpose.
+const outings: { place: string; note: string; shots: Shot[] }[] = [
+  {
+    place: "Bell Park",
+    note: "Autumn on the boardwalk by the lake.",
+    shots: [
+      { src: bellBoardwalk, alt: "Classmates seen from behind, walking on a wooden boardwalk over a lake, with red and orange trees on the far shore.", caption: "The boardwalk over the lake", area: "md:col-span-3" },
+      { src: bellLake, alt: "A wooden boardwalk with a metal railing next to dark rock, under a grey sky, with autumn trees across the water.", caption: "Rock, water and autumn colours", area: "md:col-span-3" },
+      { src: bellPath, alt: "A brick path covered in yellow leaves, next to a fence and tall autumn trees.", caption: "A path covered in leaves", area: "md:col-span-3" },
+      { src: bellTrees, alt: "Classmates seen from behind on a wooden path under yellow and orange trees.", caption: "Walking under the trees", area: "md:col-span-3" },
+    ],
+  },
+  {
+    place: "A farm visit",
+    note: "A sunny day in the countryside.",
+    shots: [
+      { src: farmTrail, alt: "Two classmates seen from behind on a gravel trail through bare trees, under a bright blue sky with thin clouds.", caption: "The trail, under a blue sky", area: "md:col-span-4" },
+      { src: farmHoney, alt: "A golden, sticky treat on a wooden stick, held up against grass and fallen leaves.", caption: "A golden treat on a stick", area: "md:col-span-4" },
+      { src: farmBottles, alt: "Bottles of different sizes on a black table, with dried flowers and steel equipment behind them.", caption: "Bottles from the farm", area: "md:col-span-4" },
+    ],
+  },
+  {
+    place: "More moments",
+    note: "",
+    shots: [
+      { src: wonderland, alt: "An artificial mountain with a waterfall falling into a turquoise pool, under a clear blue sky.", caption: "Canada's Wonderland", area: "md:col-span-4" },
+      { src: tunnel, alt: "A rock tunnel lit in red and orange, with a glass-walled walkway lit in blue running through it.", caption: "A lit tunnel on one of our outings", area: "md:col-span-4" },
+      { src: bracelets, alt: "A table with a purple cloth, covered in boxes of colourful beads, threads and scissors.", caption: "Making bracelets", area: "md:col-span-4" },
+    ],
+  },
+];
 
 // Equirectangular sketch of the trip, from real coordinates.
 const QRO = { lat: 20.59, lon: -100.39 };
@@ -56,6 +100,33 @@ export function Sudbury() {
             <span>{identity.coordinates}</span>
           </figcaption>
         </figure>
+      </div>
+
+      <div className="shell mt-24 border-t border-rule pt-12">
+        <h3 className="heading text-3xl md:text-4xl">Outside the classroom</h3>
+        <p className="mt-3 max-w-measure text-ivory/80">My own photos from the weeks in Canada. I left out the ones where my classmates' faces show.</p>
+        {outings.map((o) => (
+          <div key={o.place} className="mt-14">
+            <h4 className="heading text-xl">{o.place}</h4>
+            {o.note && <p className="mt-1 text-sm text-mist">{o.note}</p>}
+            <div className="mt-6 grid gap-x-6 gap-y-10 md:grid-cols-12">
+              {o.shots.map((s) => (
+                <figure key={s.src} className={s.area}>
+                  <div className="overflow-hidden rounded-evidence bg-graphite">
+                    <img src={s.src} alt={s.alt} loading="lazy" className="aspect-[3/4] w-full object-cover" />
+                  </div>
+                  <figcaption className="mt-3 text-[15px]">
+                    {s.caption}
+                    <span className="mt-1 flex items-center gap-2 text-sm text-mist">
+                      <span className="h-2 w-2 rounded-full bg-teal" aria-hidden="true" />
+                      My photo
+                    </span>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );

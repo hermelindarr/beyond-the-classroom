@@ -10,8 +10,8 @@ import { ExplodedRoom } from "./game-design/ExplodedRoom";
 import { MechanicsLab } from "./game-design/MechanicsLab";
 import gamePsychology from "../assets/notebook/game-psychology.webp";
 import gameOverview from "../assets/notebook/game-overview.webp";
-import v3Play from "../assets/game/starfall3-play.webp";
 import v3Eye from "../assets/game/starfall3-eye.webp";
+import { PlayHorror } from "./game-design/PlayHorror";
 
 // Ideas from my notes, matched to the exact line of StarFall that uses them.
 const links = [
@@ -144,20 +144,17 @@ export function GameDesignPage() {
           ))}
         </ol>
 
-        <div className="mt-12 grid items-center gap-8 md:grid-cols-12">
-          <figure className="md:col-span-8">
-            <div className="overflow-hidden rounded-evidence bg-graphite">
-              <img src={v3Play} alt="StarFall 3.0: abstract eyes falling over a dark background of red and purple stains and rings, above ground that drips red." loading="lazy" className="aspect-[16/9] w-full object-cover" />
-            </div>
-            <figcaption className="mt-3 text-[15px]">Version 3.0 running in GameMaker</figcaption>
-          </figure>
-          <div className="md:col-span-4">
-            <img src={v3Eye} alt="The eye that replaced the star: bone white, with red veins and a slit pupil." loading="lazy" className="h-32 w-32" />
-            <p className="mt-4 max-w-measure text-ivory/85">
+        <div className="mt-12 flex flex-wrap items-center gap-6">
+          <img src={v3Eye} alt="The eye that replaced the star: bone white, with red veins and a slit pupil." loading="lazy" className="h-20 w-20" />
+          <div>
+            <h3 className="font-display text-2xl font-semibold tracking-tight">Play version 3.0</h3>
+            <p className="mt-1 max-w-measure text-ivory/85">
               I made version 3.0 with the help of an AI assistant (Claude), following my ideas: horror, abstract art and strange sounds.
-              The new art and sounds were generated with code.
             </p>
           </div>
+        </div>
+        <div id="gd-horror" className="mt-8">
+          <PlayHorror />
         </div>
       </Section>
 

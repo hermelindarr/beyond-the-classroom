@@ -37,6 +37,7 @@ await edit("src/pages/GameDesignPage.tsx", [
    "\"Four sounds: looping music, pop, sad whistle and Game Over (placeholders in this public version)\","],
 ]);
 await edit("src/present/routes.ts", [["The sprites and sounds come from the workshop's asset pack.", "In this online version, the workshop's sprites and sounds are replaced by placeholders."]]);
+await edit("src/pages/game-design/PlayHorror.tsx", [["The Game Over sign is the image our instructor gave us, tinted red.", "The Game Over sign here is a placeholder, tinted red: the original is the image our instructor gave us, which is not redistributed."]]);
 await edit("src/pages/ItbaPage.tsx", [["<Provenance tone=\"class\">Process diagram from the workshop</Provenance>", "<Provenance tone=\"class\">Process diagram from the workshop (not included in the public version)</Provenance>"]]);
 await edit("src/starfall/sounds.ts", [["  snd_wizardSong: \"./starfall/snd_wizardSong.mp3\",", "  // Public version: an original placeholder loop replaces the workshop's music.\n  snd_wizardSong: \"./starfall/snd_music.wav\","]]);
 

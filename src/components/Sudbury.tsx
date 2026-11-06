@@ -27,8 +27,8 @@ const outings: { place: string; note: string; shots: Shot[] }[] = [
     ],
   },
   {
-    place: "A farm visit",
-    note: "A sunny day in the countryside.",
+    place: "Maple Hill Farms",
+    note: "A sunny day at the farm.",
     shots: [
       { src: farmTrail, alt: "Two classmates seen from behind on a gravel trail through bare trees, under a bright blue sky with thin clouds.", caption: "The trail, under a blue sky", area: "md:col-span-4" },
       { src: farmHoney, alt: "A golden, sticky treat on a wooden stick, held up against grass and fallen leaves.", caption: "A golden treat on a stick", area: "md:col-span-4" },
@@ -79,7 +79,6 @@ export function Sudbury() {
           </p>
           <div className="mt-10 grid gap-6 md:max-w-[520px]">
             <Reflection topic="final" label="the whole exchange (closing takeaways)" />
-            <Internal block></Internal>
             <Internal block></Internal>
           </div>
         </div>

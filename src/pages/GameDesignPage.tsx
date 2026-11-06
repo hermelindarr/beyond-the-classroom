@@ -10,6 +10,8 @@ import { ExplodedRoom } from "./game-design/ExplodedRoom";
 import { MechanicsLab } from "./game-design/MechanicsLab";
 import gamePsychology from "../assets/notebook/game-psychology.webp";
 import gameOverview from "../assets/notebook/game-overview.webp";
+import v3Play from "../assets/game/starfall3-play.webp";
+import v3Eye from "../assets/game/starfall3-eye.webp";
 
 // Ideas from my notes, matched to the exact line of StarFall that uses them.
 const links = [
@@ -33,8 +35,8 @@ const versions = [
   { name: "First session", date: "Oct 19 · week 2", file: "Linda.yyz", what: "One object, obj_star. Three stars placed in the room fall with a random speed and colour, spin, and disappear when clicked. No ground, score or sound yet." },
   { name: "Version 1", date: "Oct 22 · week 2", file: "juego Herme", what: "The full game loop: a game manager, the ground and its collisions, the explosion, the score, music and sounds, and a new star every 60 steps." },
   { name: "Version 2.0", date: "Nov 2 · week 4", file: "2.0", what: "Waves instead of the timer, each one star bigger. Three stars on the ground mean Game Over, with its own sign and sound; R or a click on the sign starts again. This is the version you can play above." },
-  { name: "Last session", date: "Nov 5 · week 4", upcoming: true, what: "The last Game Design session, for improvements to the game." },
-] as { name: string; date: string; file?: string; upcoming?: boolean; what: string }[];
+  { name: "Version 3.0", date: "Nov 5 · week 4", file: "3.0", ai: true, what: "A horror version with abstract art: the stars became eyes that blink and tremble, over a background of red and purple stains, with strange sounds. It adds a title screen, combos, ten waves to win and a final boss, the Giant Eye." },
+] as { name: string; date: string; file?: string; upcoming?: boolean; ai?: boolean; what: string }[];
 
 const adapted = [
   "Runs on an HTML canvas instead of the GameMaker runner",
@@ -125,7 +127,7 @@ export function GameDesignPage() {
         <MechanicsLab />
       </Section>
 
-      <Section id="gd-versions" title="Three versions" intro={<p>The project files on my USB drive show how the game grew, session by session.</p>}>
+      <Section id="gd-versions" title="From stars to eyes" intro={<p>The project files on my USB drive show how the game grew, session by session.</p>}>
         <ol className="border-b border-rule">
           {versions.map((v) => (
             <li key={v.date} className={`grid gap-3 border-t border-rule py-7 md:grid-cols-12 md:gap-8 ${v.upcoming ? "text-ivory/60" : ""}`}>
@@ -136,10 +138,27 @@ export function GameDesignPage() {
               <p className="max-w-measure text-ivory/85 md:col-span-6">{v.what}</p>
               <p className="text-sm text-mist md:col-span-3">
                 {v.upcoming ? <span className="chip chip-upcoming">Upcoming</span> : <span className="flex items-center gap-2"><Dot tone="student" /> {v.file}</span>}
+                {v.ai && <span className="mt-2 block">Made with AI help</span>}
               </p>
             </li>
           ))}
         </ol>
+
+        <div className="mt-12 grid items-center gap-8 md:grid-cols-12">
+          <figure className="md:col-span-8">
+            <div className="overflow-hidden rounded-evidence bg-graphite">
+              <img src={v3Play} alt="StarFall 3.0: abstract eyes falling over a dark background of red and purple stains and rings, above ground that drips red." loading="lazy" className="aspect-[16/9] w-full object-cover" />
+            </div>
+            <figcaption className="mt-3 text-[15px]">Version 3.0 running in GameMaker</figcaption>
+          </figure>
+          <div className="md:col-span-4">
+            <img src={v3Eye} alt="The eye that replaced the star: bone white, with red veins and a slit pupil." loading="lazy" className="h-32 w-32" />
+            <p className="mt-4 max-w-measure text-ivory/85">
+              I made version 3.0 with the help of an AI assistant (Claude), following my ideas: horror, abstract art and strange sounds.
+              The new art and sounds were generated with code.
+            </p>
+          </div>
+        </div>
       </Section>
 
       <Section id="gd-notes" title="From my notes to my game" intro={<p>What I wrote down in the workshop, and where it shows up in StarFall.</p>}>

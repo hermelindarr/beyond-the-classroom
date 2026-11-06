@@ -22,7 +22,7 @@ const stopsByRoute: Record<Route, Stop[]> = {
     { id: "gd-inside", title: "Inside the project" },
     { id: "gd-layers", title: "One room, three layers" },
     { id: "gd-how", title: "How it works" },
-    { id: "gd-versions", title: "Three versions" },
+    { id: "gd-versions", title: "From stars to eyes" },
     { id: "gd-notes", title: "From my notes to my game" },
   ],
   animation: [

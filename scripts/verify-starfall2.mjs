@@ -105,7 +105,7 @@ try {
 
   // Versions section.
   const versions = await p.$eval("#gd-versions", (el) => el.innerText);
-  check(/Oct 19/.test(versions) && /Oct 22/.test(versions) && /Nov 2/.test(versions) && /Upcoming/.test(versions), "Three versions, dated, plus the upcoming last session");
+  check(/Oct 19/.test(versions) && /Oct 22/.test(versions) && /Nov 2/.test(versions) && /Nov 5/.test(versions) && /Version 3.0/.test(versions) && /AI assistant/.test(versions), "Four versions, dated, with version 3.0 and its AI note");
   check(errors.length === 0, "No errors, no missing files, no internet", errors.slice(0, 3).join(" | "));
 } catch (e) {
   check(false, "Test run crashed", e.message);

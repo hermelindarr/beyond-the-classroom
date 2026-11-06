@@ -43,7 +43,7 @@ export type Subject = {
 };
 
 export const subjects: Subject[] = [
-  { id: "game-design", name: "Game Design", inside: "Game design theory in week 1. StarFall, my first game in GameMaker, started in week 2 and grew into version 2.0 in week 4 (waves, three lives, Game Over), with its code and my notes on player psychology", weeks: [1, 2, 4], status: "student", studentPieces: 5, classPieces: 2 },
+  { id: "game-design", name: "Game Design", inside: "Game design theory in week 1. StarFall, my first game in GameMaker, started in week 2 and grew into version 2.0 in week 4 (waves, three lives, Game Over) and a horror version 3.0, with its code and my notes on player psychology", weeks: [1, 2, 4], status: "student", studentPieces: 5, classPieces: 2 },
   { id: "drawing", name: "Drawing and Character Development", inside: "A layered digital pose drawing, five thumbnail sketches, and life drawings from Nov 5", weeks: [2, 3, 4], status: "student", studentPieces: 6, classPieces: 2 },
   { id: "harmony", name: "2D Animation in Harmony", inside: "Keyframe practice and a walk cycle on a rigged character", weeks: [1, 2, 3, 4], status: "student", studentPieces: 2, classPieces: 1 },
   { id: "blender", name: "3D Animation in Blender", inside: "My shortcut map from Harmony to Blender, and forward vs inverse kinematics", weeks: [2, 3, 4], status: "student", studentPieces: 1, classPieces: 0 },
@@ -71,7 +71,6 @@ export const weeks: Week[] = [
   {
     n: 1, label: "Introduction", start: "2026-10-12", end: "2026-10-18",
     events: [
-      { date: "2026-10-14", title: "Portfolio Exchange introduced", kind: "program" },
       { date: "2026-10-14", title: "Arduino circuits in Tinkercad", kind: "evidence", subject: "microbits" },
     ],
   },
@@ -97,7 +96,6 @@ export const weeks: Week[] = [
       { date: "2026-10-28", title: "Our business idea won", kind: "evidence" },
       { date: "2026-10-29", title: "Life drawing: gesture and drapery", kind: "workshop", subject: "drawing" },
       { date: "2026-10-29", title: "My gesture sketches", kind: "evidence", subject: "drawing" },
-      { date: "2026-10-29", title: "Portfolio Exchange check-up", kind: "program" },
       { date: "2026-10-30", title: "Game Jam social", kind: "program" },
       { date: "2026-11-01", title: "Sudbury Wolves hockey game", kind: "program" },
     ],
@@ -115,8 +113,7 @@ export const weeks: Week[] = [
       { date: "2026-11-04", title: "Harmony · Sacred Fire and Indigenous teaching", kind: "workshop", subject: "harmony" },
       { date: "2026-11-05", title: "Life drawing · Game Design", kind: "workshop", subject: "drawing" },
       { date: "2026-11-05", title: "My life drawings", kind: "evidence", subject: "drawing" },
-      { date: "2026-11-06", title: "Final presentations · Graduation", kind: "program" },
-      { date: "2026-11-07", title: "Flight home to Mexico City", kind: "program" },
+      { date: "2026-11-05", title: "StarFall 3.0: a horror version", kind: "evidence", subject: "game-design" },
     ],
   },
 ];
